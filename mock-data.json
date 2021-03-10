@@ -1,0 +1,43 @@
+[
+   {
+       "_id": "5ffe0b3b81cd405c9410e3a2",
+       "createdBy": "12345678910",
+       "title": "On a golden beach",
+       "description": "A location just outside Byron Bay",
+       "pictures": [
+            "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0", 
+            "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0"
+        ],
+       "latitude": "43.89898989898",
+       "longitude": "56.9090909090",
+       "assignedTo": "",
+       "isOpen": true
+   },
+   {
+       "_id": "60153ac400295317e8cae111",
+       "createdBy": "11111111111",
+       "title": "Incredible discovery",
+       "description": "A location I found during a walk in the woods",
+       "pictures": [
+           "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0",
+           "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0",
+           "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0",
+           "https://www.mynrma.com.au/-/media/local-guides/darwin/desktop-banner-hero-darwin.jpg?h=500&la=en&w=1140&hash=6051728B637FFBDE200B5547137306C0"
+        ],
+       "latitude": "43.89898985566",
+       "longitude": "56.9090907788",
+       "assignedTo": "",
+       "isOpen": true
+   },
+   {
+    "_id": "60153ac400295317e8cae222",
+    "createdBy": "22222222222",
+    "title": "You won't believe it!",
+    "description": "A pile of rubbish in a pristine location on this beautiful river",
+    "pictures": [],
+    "latitude": "44.89898985222",
+    "longitude": "57.9090907333",
+    "assignedTo": "",
+    "isOpen": false
+}
+]
