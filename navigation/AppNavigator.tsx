@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, Pressable, SafeAreaView, Button, View } from "react-native";
+import { Platform, StyleSheet, Pressable, SafeAreaView, Button, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -7,8 +7,9 @@ import {
    createDrawerNavigator,
    DrawerItemList
  } from "@react-navigation/drawer";
-import FilteredScreen from "../screens/FilteredScreen";
-import { AntDesign, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"; 
+import CollectedScreen from "../screens/CollectedScreen";
+import InProgressScreen from "../screens/InProgressScreen";
+import { AntDesign, Ionicons } from "@expo/vector-icons"; 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditLocationScreen from "../screens/EditLocationScreen";
 import LocationsListScreen from "../screens/LocationsListScreen";
@@ -18,7 +19,7 @@ import AuthScreen from "../screens/AuthScreen";
 import StartUpScreen from "../screens/StartUpScreen";
 import { authenticateLogout } from "../store/actions/auth";
 import Colors, { ASYNC_STORAGE_USER_DATA_KEY } from "../constants";
-import { RootState, Navigation, LocationScreenStatus } from "../types";
+import { RootState, Navigation } from "../types";
 
 const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -31,20 +32,10 @@ const TabsNavigator = ({ navigation }: Navigation) => {
             <Pressable onPress={() => { 
                navigation.toggleDrawer();
              }}>
-               <Ionicons name="menu" size={32} color={Colors.whiteText} style={{ marginLeft: 18 }} />
+               <Ionicons name="menu" size={32} color={Colors.white} style={{ marginLeft: 18 }} />
             </Pressable>
          ),
-         headerRight: () => (
-            <Pressable onPress={() => { 
-               navigation.navigate("Add", {
-                  title: "Add location",
-                  data: {},
-                  status: LocationScreenStatus.Create
-               })
-             }}>
-               <MaterialCommunityIcons name="plus-thick" size={26} color={Colors.whiteText} style={{ marginRight: 18}} />
-            </Pressable>
-         ),
+
       });
     }, [navigation]);
 
@@ -59,7 +50,7 @@ const TabsNavigator = ({ navigation }: Navigation) => {
             },
          }}>
          <Tabs.Screen
-            name="Home"
+            name="All"
             component={LocationsListScreen}
             options={{
             tabBarIcon: ({ color, size }: any) => (
@@ -67,11 +58,19 @@ const TabsNavigator = ({ navigation }: Navigation) => {
             )}}
          />
          <Tabs.Screen
-            name="Filtered"
-            component={FilteredScreen}
+            name="In Progress"
+            component={InProgressScreen}
             options={{
             tabBarIcon: ({ color, size }: any) => (
-               <AntDesign name="star" size={size} color={color}/>
+               <AntDesign name="loading1" size={size} color={color}/>
+            )}}
+         />
+         <Tabs.Screen
+            name="Collected"
+            component={CollectedScreen}
+            options={{
+            tabBarIcon: ({ color, size }: any) => (
+               <AntDesign name="check" size={size} color={color} />
             )}}
          />
       </Tabs.Navigator>
@@ -90,12 +89,11 @@ const LocationsNavigator = () => {
                   component={TabsNavigator}
                   options={{
                      title: "Locations",
-             
                      headerTransparent: true,
                      headerStyle: {
                         backgroundColor: Platform.OS === "android" ? Colors.headerColor : "rgba(0,0,0,0.8)",
                      },
-                     headerTintColor: Platform.OS === "android" ? Colors.whiteText : "#fff",
+                     headerTintColor: Platform.OS === "android" ? Colors.white : "#fff",
                      headerTitleStyle: {
                         fontWeight: "bold",
                      },
@@ -105,39 +103,33 @@ const LocationsNavigator = () => {
                   name="Location"
                   component={LocationScreen}
                   options={{
-                     headerStyle: {
-                        backgroundColor: Platform.OS === "android" ? Colors.headerColor : "#fff",
-                     },
-                     headerTintColor: Platform.OS === "android" ? Colors.whiteText : "#000",
+                     headerStyle: styles.locationHeaderStyle,
+                     headerTintColor: Colors.white,
                      headerTitleStyle: {
-                     fontWeight: "bold",
-                     },
+                        fontWeight: "bold",
+                     }
                   }}
                />
                <Stack.Screen 
                   name="Add"
                   component={AddLocationScreen}
                   options={{
-                     headerStyle: {
-                     backgroundColor: Platform.OS === "android" ? Colors.headerColor : "#fff",
-                     },
-                     headerTintColor: Platform.OS === "android" ? Colors.whiteText : "#000",
+                     headerStyle: styles.locationHeaderStyle,
+                     headerTintColor: Colors.white,
                      headerTitleStyle: {
-                     fontWeight: "bold",
-                     },
+                        fontWeight: "bold",
+                     }
                   }}
                />
                <Stack.Screen 
                   name="Edit"
                   component={EditLocationScreen}
                   options={{
-                     headerStyle: {
-                     backgroundColor: Platform.OS === "android" ? Colors.headerColor : "#fff",
-                     },
-                     headerTintColor: Platform.OS === "android" ? Colors.whiteText : "#000",
+                     headerStyle: styles.locationHeaderStyle,
+                     headerTintColor: Colors.white,
                      headerTitleStyle: {
-                     fontWeight: "bold",
-                     },
+                        fontWeight: "bold",
+                     }
                   }}
                />
             </>
@@ -187,5 +179,17 @@ const AppNavigator = () => {
      </DrawerNavigator.Navigator>
    );
 }
+
+const styles = StyleSheet.create({
+   locationHeaderStyle: {
+      backgroundColor: Colors.green,
+      borderWidth: 0, // Remove Border
+      shadowColor: "rgba(0,0,0, 0.0)", // Remove Shadow IOS
+      shadowOffset: { height: 0, width: 0 },
+      shadowOpacity: 0,
+      shadowRadius: 0,
+      elevation: 0 // This is for Android
+   }
+});
 
 export default AppNavigator;

@@ -133,7 +133,7 @@ function* updateLocationSaga() {
    ], function* ({ type, payload }: any) {
       try {
          const { token } = yield select(state => state.auth);
-         const { location: { _id, title, description, createdBy, notificationToken } } = payload;
+         const { location: { _id, title, description, createdBy, notificationToken }, userId } = payload;
 
          let body: string = JSON.stringify({});
 
@@ -142,11 +142,11 @@ function* updateLocationSaga() {
                title,
                description
             })
-         } 
+         }
          
-         if (type === actions.ASSIGN_LOCATION && payload.userId) {
+         if (type === actions.ASSIGN_LOCATION) {
             body = JSON.stringify({
-               assignedTo: payload.userId
+               assignedTo: userId
             })
          }
 

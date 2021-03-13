@@ -49,7 +49,7 @@ const ImageHandler = ({ setImage }: Props) => {
          <CustomButtom 
             text={!pickedImage ? "Add image" : "Change image"}
             handleOnPress={takeImageHandler}
-            icon={<MaterialIcons name="image" size={22} color={Colors.whiteText} />}
+            icon={<MaterialIcons name="image" size={22} color={Colors.white} />}
          />
          <Image style={styles.imagePreview} source={{ uri: pickedImage }}/>
       </View>

@@ -1,10 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-const FilteredScreen = () => {
+const CollectedScreen = () => {
    return (
       <View style={styles.container}>
-         <Text style={styles.text}>Filtered</Text>
+         <Text style={styles.text}>Collected</Text>
       </View>
    );
 }
@@ -21,4 +21,4 @@ const styles = StyleSheet.create({
    }
 });
  
-export default FilteredScreen;
+export default CollectedScreen;

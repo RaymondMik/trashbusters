@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Text, Pressable, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigation } from "../types";
 import { getLocations } from "../store/actions/locations";
 import { FALLBACK_LOCATION } from "../constants";
 import { RootState, LocationScreenStatus } from "../types";
 import MapView, { Marker } from "react-native-maps";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants";
 
 const LocationsListScreen = ({ navigation }: Navigation) => {
@@ -30,12 +30,13 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
    }
 
    return (
-      <>
+      <View style={{ flex: 1 }}>
          {isLoading && !items.length && (
             <View style={styles.centeredView}>
                <ActivityIndicator size="large" color="black" />
             </View>
          )}
+         
          <MapView
             style={styles.map}
             mapType="satellite"
@@ -64,11 +65,43 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
                      })
                   }}
                >
-                  <AntDesign name="enviroment" size={34} color={Colors.red} />
+                  <Ionicons name="ios-trash-sharp" size={34} color={Colors.red} />
                </Marker>
             ))}
          </MapView>
-      </>
+         <View style={styles.buttonsContainer}>
+            <View style={styles.buttonContainer}>
+               <Pressable 
+                  onPress={() => { 
+                     navigation.navigate("Add", {
+                        title: "Add location",
+                        data: {},
+                        status: LocationScreenStatus.Create
+                  })
+               }}>
+                  <Ionicons name="earth-sharp" size={28} color={Colors.white} style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>report</Text>
+                  <Text style={styles.buttonText}>abandoned</Text>
+               <Text style={styles.buttonText}>trash</Text>
+               </Pressable>
+            </View>
+            <View style={styles.buttonContainer}>
+               <Pressable 
+                  onPress={() => { 
+                     navigation.navigate("Add", {
+                        title: "Add location",
+                        data: {},
+                        status: LocationScreenStatus.Create
+                  })
+               }}>
+                  <FontAwesome5 name="trash-restore" size={26} color={Colors.white} style={styles.buttonIcon} />
+                  <Text style={styles.buttonText}>report</Text>
+                  <Text style={styles.buttonText}>and</Text>
+                  <Text style={styles.buttonText}>collect</Text>
+               </Pressable>
+            </View>
+         </View>
+      </View>
    );
 };
 
@@ -79,7 +112,29 @@ const styles = StyleSheet.create({
    },
    map: {
       flex: 1
-    },
+   },
+   buttonsContainer: {
+      position: "absolute",
+      bottom: "30%",
+      right: 0,
+      paddingVertical: 20,
+      borderTopLeftRadius: 20,
+      borderBottomLeftRadius: 20,
+      backgroundColor: "rgba(0,0,0,0.5)",
+   },
+   buttonContainer: {
+      padding: 10
+   },
+   buttonIcon: {
+      textAlign: "center",
+      marginTop: 5,
+      marginBottom: 5
+   },
+   buttonText: {
+      color: "white",
+      textAlign: "center",
+      fontSize: 12
+   },
    gridItem: {
       flex: 1,
       justifyContent: "center",

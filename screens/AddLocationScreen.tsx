@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Pressable, Text, View, TextInput, Alert, ActivityIndicator } from "react-native";
+import { StyleSheet, Platform, Pressable, Text, ScrollView, Keyboard, TouchableWithoutFeedback, View, KeyboardAvoidingView, Alert, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field } from "formik";
 import * as yup from "yup";
@@ -21,7 +21,7 @@ const addLocationValidationSchema = yup.object().shape({
    description: yup
       .string()
       .min(4, ({ min }) => `Description must be at least ${min} characters`)
-      .required("Password is required"),
+      .required("Description is required"),
 })
 
 const AddLocationScreen = ({ navigation }: any) => {
@@ -30,9 +30,10 @@ const AddLocationScreen = ({ navigation }: any) => {
    const [locationHasErrored, setLocationHasErrored] = useState<boolean>(false);
    const [image, setImage] = useState<any>(null);
    const [hasNoImage, setHasNoImage] = useState<boolean>(false);
-   const dispatch = useDispatch();
 
+   const dispatch = useDispatch();
    const formRef: HTMLFormElement = useRef(null);
+
    const { userId, hasError: authError } = useSelector((state: RootState) => state.auth);
    const { isLoading, hasPhotoError, notificationToken } = useSelector((state: RootState) => state.locations);
 
@@ -100,76 +101,91 @@ const AddLocationScreen = ({ navigation }: any) => {
       navigation.setOptions({
          headerLeft: () => (
             <Pressable onPress={() => { navigation.goBack() }} style={{ marginLeft: 15 }}>
-               <Text>Cancel</Text>
+               <Text style={ styles.headerText }>Cancel</Text>
             </Pressable>
          ),
          headerRight: () => (
             <Pressable onPress={() => { saveInput() }} style={{ marginRight: 15 }}>
-               <Text>Save</Text>
+               {isLoading && formRef?.current?.isValid && image ? (
+                  <ActivityIndicator size="small" color={Colors.white} />
+               ) : (
+                  <Text style={ styles.headerText }>Save</Text>
+               )}
             </Pressable>
          ),
       });
-   }, [navigation, image]);
+   }, [navigation, image, isLoading, formRef]);
 
    return (
-      <View style={styles.container}>
-         {authError && Alert.alert("An Error Occurred", authError, [{ text: 'Okay' }] )}
-         {hasNoImage && Alert.alert("Please add an image", "", [{ text: 'Okay' }] )}
-         {locationHasErrored && !currentLocation && Alert.alert("NO LOCATION", "", [{ 
-            text: 'Okay',
-            onPress: () => {navigation.navigate("Home")} 
-         }])}
-         {hasPhotoError && Alert.alert("An error occurred while uploading your photo", hasPhotoError, [{ text: 'Okay' }] )}
-         <View style={styles.map}>
-            {locationHasErrored ? (
-               <Text>We couldn't fetch your location</Text>
-            ) : ( isLoadingLocation ? (
-               <ActivityIndicator size="small" color="black" style={{ marginTop: 20 }} />
-            ) : (
-               <MapView
-                  style={styles.map}
-                  mapType={"satellite"}
-                  showsUserLocation
-                  region={{
-                     latitude: currentLocation?.coords?.latitude || FALLBACK_LOCATION.coords.latitude,
-                     longitude: currentLocation?.coords?.longitude || FALLBACK_LOCATION.coords.longitude,
-                     latitudeDelta: 0.0911,
-                     longitudeDelta: 0.0421
-                  }}
-                  onPress={() => { console.log("Use this to interact with the map") }}
-               />
-            ))}
-         </View>
-         {isLoading && formRef?.current?.isValid && image ? (
-            <ActivityIndicator size="small" color="black" style={{ marginTop: 20 }} />
-         ) : (
-            <Formik
-               validationSchema={addLocationValidationSchema}
-               initialValues={{ title: "", description: "", picture: "" }}
-               innerRef={formRef}
+      <ScrollView>
+         <TouchableWithoutFeedback
+            onPress={ () => { Keyboard.dismiss() } }
+         >
+            <KeyboardAvoidingView
+               style={styles.container}
+               behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
-            {() => (
-               <View style={styles.formContainer}>
-                  <Field
-                     component={CustomInput}
-                     label="Title"
-                     name="title"
-                     placeholder="Add a title which help other to remember this location"
-                  />
-                  <Field
-                     component={CustomInput}
-                     label="Description"
-                     name="description"
-                     placeholder="Add a helpful description here"
-                  />
-                  <View style={styles.imagePreviewContainer}>
-                     <ImageHandler setImage={setImage} />
-                  </View>
+               {authError && Alert.alert("An Error Occurred", authError, [{ text: 'Okay' }] )}
+               {hasNoImage && Alert.alert("Please add an image", "", [{ text: 'Okay' }] )}
+               {locationHasErrored && !currentLocation && Alert.alert("NO LOCATION", "", [{ 
+                  text: 'Okay',
+                  onPress: () => {navigation.navigate("Home")} 
+               }])}
+               {hasPhotoError && Alert.alert("An error occurred while uploading your photo", hasPhotoError, [{ text: 'Okay' }] )}
+               <View style={styles.map}>
+                  {locationHasErrored ? (
+                     <Text>We couldn't fetch your location</Text>
+                  ) : ( isLoadingLocation ? (
+                     <ActivityIndicator size="small" color="black" style={{ marginTop: 20 }} />
+                  ) : (
+                     <MapView
+                        style={styles.map}
+                        mapType={"satellite"}
+                        showsUserLocation
+                        region={{
+                           latitude: currentLocation?.coords?.latitude || FALLBACK_LOCATION.coords.latitude,
+                           longitude: currentLocation?.coords?.longitude || FALLBACK_LOCATION.coords.longitude,
+                           latitudeDelta: 0.0911,
+                           longitudeDelta: 0.0421
+                        }}
+                        onPress={() => { console.log("Use this to interact with the map") }}
+                     />
+                  ))}
                </View>
-            )}
-            </Formik>
-         )}
-      </View>
+               <Formik
+                  validationSchema={addLocationValidationSchema}
+                  initialValues={{ title: "", description: "", picture: "" }}
+                  innerRef={formRef}
+               >
+               {() => (
+                  <>
+                     <View style={styles.formTitleContainer}>
+                        <Field
+                           component={CustomInput}
+                           label="Title"
+                           name="title"
+                           placeholder="Add a title which help other to remember this location"
+                           horizontalView
+                        />
+                     </View>
+                     <View style={styles.formContainer}>
+                        <Field
+                           component={CustomInput}
+                           label="Description"
+                           name="description"
+                           placeholder="Add a helpful description here"
+                           isTextArea
+                        />
+                        <View style={styles.imagePreviewContainer}>
+                           <ImageHandler setImage={setImage} />
+                        </View>
+                     </View>
+                  </>
+               )}
+               </Formik>
+            </KeyboardAvoidingView>
+         </TouchableWithoutFeedback>
+      </ScrollView>
    );
 }
 
@@ -178,14 +194,27 @@ const styles = StyleSheet.create({
       flex: 1,
       alignItems: "center",
       justifyContent: "flex-start",
+      backgroundColor: Colors.green,
+   },
+   headerText: {
+      color: Colors.white
+   },
+   formTitleContainer: {
+      padding: 20
    },
    map: {
       width: "100%",
-      height: 300
+      height: 300,
+      borderRadius: 20,
+      paddingHorizontal: 20
    },
    formContainer: {
       width: "100%",
-      padding: 15
+      padding: 20,
+      backgroundColor: Colors.white,
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40,
+      flex: 1,
    },
    textInput: {
       width: "100%",

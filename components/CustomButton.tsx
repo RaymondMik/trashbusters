@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
       backgroundColor: Colors.button,
    },
    buttonText: {
-      color: Colors.whiteText,
+      color: Colors.white,
       marginRight: 5
    },
 })
