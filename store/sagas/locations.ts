@@ -143,7 +143,7 @@ function* updateLocationSaga() {
                description
             })
          }
-         
+
          if (type === actions.ASSIGN_LOCATION) {
             body = JSON.stringify({
                assignedTo: userId

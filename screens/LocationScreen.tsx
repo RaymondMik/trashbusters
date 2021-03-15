@@ -1,8 +1,8 @@
 import React from "react";
-import { StyleSheet, Pressable, Platform, Text, View, Image, Alert } from "react-native";
+import { StyleSheet, Pressable, Text, View, Image, Alert } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../store/actions/modal"
-import { AntDesign, MaterialCommunityIcons, Feather, Entypo, Ionicons, FontAwesome  } from "@expo/vector-icons"; 
+import { AntDesign, MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"; 
 import MapView, { Marker } from 'react-native-maps';
 import { Navigation, LocationScreenStatus } from "../types";
 import CustomModal from "../components/CustomModal";
@@ -21,8 +21,6 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
    const isAssignedToMe = data.assignedTo === userId;
 
    const selectedLocation = locations.items.find((location: any) => location._id === data._id);
-
-   console.log(9999, selectedLocation);
 
    React.useLayoutEffect(() => {
       if (status === LocationScreenStatus.View) {
@@ -115,22 +113,41 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
                {selectedLocation?.isOpen ? (
                   <View style={styles.status}>
                      {selectedLocation?.assignedTo?.length && selectedLocation?.isOpen ? (
-                        <>
-                           <Text style={styles.statusLabel}>Assigned</Text>
-                           <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
-                        </>
+                        isAssignedToMe ? (
+                           <>
+                           <View style={styles.statusLabelContainer}>
+                              <Text style={styles.statusLabel}>Assigned to you</Text>
+                              <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                           </View>
+                           <Pressable
+                              onPress={() => {
+                                 dispatch(markLocationAsDone(data));
+                              }}
+                           >
+                              <View style={styles.button}>
+                                 <Text style={styles.buttonText}>Done? Take a photo</Text>
+                                 <MaterialIcons name="add-a-photo" size={24} color={Colors.white} />
+                              </View>
+                           </Pressable>
+                           </>
+                        ) : (
+                           <View style={styles.statusLabelContainer}>
+                              <Text style={styles.statusLabel}>Assigned</Text>
+                              <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                           </View>
+                        )
                      ) : (
-                        <>
+                        <View style={styles.statusLabelContainer}>
                            <Text style={styles.statusLabel}>Unassigned</Text>
                            <MaterialCommunityIcons name="progress-check" size={40} color="orange" />
-                        </>
+                        </View>
                      )}
                   </View>
                ) : (
-                  <>
+                  <View style={styles.status}>
                      <Text style={styles.statusLabel}>Done</Text>
                      <MaterialCommunityIcons name="check-circle" size={40} color={Colors.green} />
-                  </>
+                  </View>
                )}
             </View>
          </View>
@@ -166,14 +183,24 @@ const styles = StyleSheet.create({
    },
    statusContainer: {
       width: "100%",
-      flexDirection: "row",
       justifyContent: "center",
-      marginTop: 20,
-      paddingHorizontal: 20
+      paddingHorizontal: 20,
    },
    status: {
+      alignItems: "center",
+   },
+   statusLabelContainer: {
+      marginTop: -35,
+      marginBottom: 15,
       flexDirection: "row",
       alignItems: "center",
+      backgroundColor: Colors.white,
+      borderRadius: 5,
+      shadowOffset:{  width: 3,  height: 3 },
+      shadowColor: 'black',
+      shadowOpacity: 0.5,
+      paddingHorizontal: 8,
+      paddingVertical: 3
    },
    statusLabel: {
       marginRight: 5,
@@ -207,21 +234,22 @@ const styles = StyleSheet.create({
    //    flexDirection: "row",
    //    justifyContent: "space-between",
    // },
-   // button: {
-   //    flexDirection: "row",
-   //    justifyContent: "center",
-   //    alignItems: "center",
-   //    backgroundColor: Colors.button,
-   //    marginVertical: 20,
-   //    paddingHorizontal: 12,
-   //    borderRadius: 10
-   // },
-   // buttonText: {
-   //    padding: 18,
-   //    fontSize: 16,
-   //    fontWeight: "bold",
-   //    color: Colors.white,
-   // }
+   button: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: Colors.button,
+      marginVertical: 5,
+      paddingHorizontal: 12,
+      borderRadius: 10
+   },
+   buttonText: {
+      paddingVertical: 15,
+      marginRight: 5,
+      fontSize: 16,
+      fontWeight: "bold",
+      color: Colors.white,
+   }
 });
  
 export default LocationScreen;

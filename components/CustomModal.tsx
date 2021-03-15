@@ -47,23 +47,25 @@ const CustomModal = ({ data, navigation, show }: any) => {
                      </Pressable>
                   </>
                )}
-               <Pressable
-                  style={{...styles.modalButton,  ...(data.createdBy !== userId && { ...styles.firstButton }) }}
-                  onPress={() => {
-                     if (isAssignedToMe) {
-                        dispatch(assignLocation(data, ""));
-                     } else {
-                        dispatch(assignLocation(data, userId));
-                     }
-                  }}
-               >
-                  {isAssignedToMe ? (
-                     <Text style={styles.textStyle}>Unassign</Text>
-                  ) : (
-                     <Text style={styles.textStyle}>Assign to me</Text>
-                  )}
+               {data.isOpen && (
+                  <Pressable
+                     style={{...styles.modalButton,  ...(data.createdBy !== userId && { ...styles.firstButton }) }}
+                     onPress={() => {
+                        if (isAssignedToMe) {
+                           dispatch(assignLocation(data, ""));
+                        } else {
+                           dispatch(assignLocation(data, userId));
+                        }
+                     }}
+                  >
+                     {isAssignedToMe ? (
+                        <Text style={styles.textStyle}>Unassign</Text>
+                     ) : (
+                        <Text style={styles.textStyle}>Assign to me</Text>
+                     )}
                </Pressable>
-               {isAssignedToMe && (
+               )}
+               {/* {data.isOpen && isAssignedToMe && (
                   <Pressable
                      style={{ ...styles.modalButton, borderBottomLeftRadius: 10, borderBottomRightRadius: 10, borderBottomWidth: 0 }}
                      onPress={() => {
@@ -72,7 +74,7 @@ const CustomModal = ({ data, navigation, show }: any) => {
                   >
                      <Text style={{...styles.textStyle, color: Colors.green}}>Mark as done</Text>
                   </Pressable>
-               )} 
+               )}  */}
                <Pressable
                   style={{ ...styles.modalButton, marginTop: 20, borderRadius: 10 }}
                   onPress={() => {
