@@ -8,13 +8,12 @@ import Colors from "../constants";
 import { ImageLabels, LocationScreenStatus } from "../types";
 
 interface Props {
-   images: string[];
    label: string;
-   setLocationImages: (imageUri: string[]) => void,
+   setImage: (imageUri: string[]) => void,
    status: string;
 }
 
-const ImageHandler = ({ images, label, setLocationImages, status }: Props) => {
+const ImageHandler = ({ label, setImage, status }: Props) => {
    const [pickedImage, setPickedImage] = useState<any>(null);
 
    const verifyPermissions = async() => {
@@ -43,21 +42,8 @@ const ImageHandler = ({ images, label, setLocationImages, status }: Props) => {
          aspect: [16, 9],
          quality: 0.5
       });
-      
-      if (label === ImageLabels.Before) {
-         console.log(777, images);
-         const modifiedImagesState = images.length ? images.splice(0, 1, image.uri) : [image.uri]
-         // setImages(images.splice(0, 1, image.uri));
-         console.log(888, modifiedImagesState);
-         setLocationImages(modifiedImagesState);
-      } else {
-         console.log(888, images);
-         const modifiedImagesState = images.length > 1 ? images.splice(1, 1, image.uri) : [...images, image.uri];
-         console.log(999, modifiedImagesState);
-         setLocationImages(modifiedImagesState);
-         // setImage(image.uri);
-      }
-      
+            
+      setImage(image.uri);
       setPickedImage(image.uri);
    }
 

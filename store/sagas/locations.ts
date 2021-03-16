@@ -9,6 +9,7 @@ import { toggleModal } from "../actions/modal"
 import { FALLBACK_LOCATION } from "../../constants";
 import { FIREBASE_URI } from "../../secrets";
 import { fetchData } from "../../services";
+import { LocationScreenStatus } from "../../types";
 
 const uploadImage = async(uri: string, userId: string) => {
    firebase.initializeApp(firebaseConfig);
@@ -114,11 +115,34 @@ function* addLocationSaga() {
             throw `A ${response.status} error occured`
          }
 
+         // @ts-ignore
+         const newItem: any = yield response.json();
+
          yield all([
             put(actions.getLocations()),
             put(actions.addLocationSuccess()),
          ]);
-         navigation.navigate("Home");
+
+         // navigate to home only for report location
+         if (!location.assignedTo) {
+            navigation.navigate("Home");
+         } else {
+            const _id = newItem.name
+
+            console.log(333, `${FIREBASE_URI}/locations/${_id}.json`);
+
+            // @ts-ignore
+            const locationResponse: any = yield call(fetchData, { endpoint: `${FIREBASE_URI}/locations/${_id}.json` });
+            // @ts-ignore
+            const resData = yield locationResponse.json();
+            const location = { ...resData, _id }
+
+            navigation.navigate("Location", {
+               title: location.title,
+               data: location,
+               status: LocationScreenStatus.View 
+            })
+         }
       } catch(error) {
          yield put(actions.addLocationFailure(error));
       }

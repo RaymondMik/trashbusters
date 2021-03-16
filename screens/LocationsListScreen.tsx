@@ -36,7 +36,6 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
                <ActivityIndicator size="large" color="black" />
             </View>
          )}
-         
          <MapView
             style={styles.map}
             mapType="satellite"

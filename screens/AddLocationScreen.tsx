@@ -10,7 +10,7 @@ import { addLocation, addNotificationToken } from "../store/actions/locations";
 import ImageHandler from "../components/ImageHandler";
 import CustomInput from "../components/CustomInput";
 import Colors, { FALLBACK_LOCATION } from "../constants";
-import { RootState, UserGPSLocation } from "../types";
+import { RootState, UserGPSLocation, LocationScreenStatus } from "../types";
 import { registerForPushNotificationsAsync } from "../utils";
 
 const addLocationValidationSchema = yup.object().shape({
@@ -24,7 +24,7 @@ const addLocationValidationSchema = yup.object().shape({
       .required("Description is required"),
 })
 
-const AddLocationScreen = ({ navigation }: any) => {
+const AddLocationScreen = ({ route, navigation }: any) => {
    const [currentLocation, setCurrentLocation] = useState<UserGPSLocation | null>(null);
    const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(true);
    const [locationHasErrored, setLocationHasErrored] = useState<boolean>(false);
@@ -33,6 +33,8 @@ const AddLocationScreen = ({ navigation }: any) => {
 
    const dispatch = useDispatch();
    const formRef: HTMLFormElement = useRef(null);
+
+   const { params: { status } } = route;
 
    const { userId, hasError: authError } = useSelector((state: RootState) => state.auth);
    const { isLoading, hasPhotoError, notificationToken } = useSelector((state: RootState) => state.locations);
@@ -74,20 +76,19 @@ const AddLocationScreen = ({ navigation }: any) => {
             setHasNoImage(false);
          }, 3000);
 
-         return; 
+         return;
       }
 
-      if (formRef?.current?.isValid) {
+      if (formRef?.current?.isValid && currentLocation) {
          dispatch(
             addLocation(
                {
                   createdBy: userId,
                   title: formRef.current.values.title,
                   description: formRef.current.values.description,
-                  pictures: [],
                   latitude: currentLocation?.coords?.latitude.toString(),
                   longitude: currentLocation?.coords?.longitude.toString(),
-                  assignedTo: "",
+                  assignedTo: status === LocationScreenStatus.CreateAndAssign ? userId : "",
                   isOpen: true,
                   notificationToken
                },
@@ -177,7 +178,7 @@ const AddLocationScreen = ({ navigation }: any) => {
                            isTextArea
                         />
                         <View style={styles.imagePreviewContainer}>
-                           <ImageHandler setImage={setImage} />
+                           <ImageHandler label="" status="" setImage={setImage} />
                         </View>
                      </View>
                   </>

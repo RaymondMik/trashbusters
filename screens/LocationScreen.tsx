@@ -7,7 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { Navigation, LocationScreenStatus } from "../types";
 import CustomModal from "../components/CustomModal";
 import Colors, { FALLBACK_LOCATION } from "../constants";
-import { deleteLocation, assignLocation, markLocationAsDone } from "../store/actions/locations";
+import { markLocationAsDone } from "../store/actions/locations";
 import { RootState } from "../types";
 
 const LocationScreen = ({ route, navigation }: Navigation) => {
@@ -15,16 +15,18 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
 
    const { data, status } = route.params;
    const modal = useSelector((state: RootState) => state.modal);
-   const { locations } = useSelector((state: RootState) => state);
    const { hasError, userId } = useSelector((state: RootState) => state.auth);
 
    const isAssignedToMe = data.assignedTo === userId;
 
-   const selectedLocation = locations.items.find((location: any) => location._id === data._id);
-
    React.useLayoutEffect(() => {
       if (status === LocationScreenStatus.View) {
          navigation.setOptions({
+            headerLeft: () => (
+               <Pressable onPress={() => { navigation.navigate("Home"); }}>
+                  <Ionicons name="chevron-back" size={25} color={Colors.white} style={{ marginLeft: 18}} />
+               </Pressable>
+            ),
             headerRight: () => (
                <Pressable onPress={() => { dispatch(toggleModal()) }}>
                   <AntDesign name="ellipsis1" size={24} color={Colors.white} style={{ marginRight: 18}} />
@@ -36,7 +38,7 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
 
    return (
       <View style={styles.container}>
-         {selectedLocation && <CustomModal show={modal.show} data={selectedLocation} navigation={navigation}/>}
+         {data && <CustomModal show={modal.show} data={data} navigation={navigation}/>}
          {hasError && Alert.alert("An Error Occurred", hasError, [{ text: 'Okay' }] )}
          <View style={styles.map}>
             <MapView
@@ -44,20 +46,20 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
                mapType={"satellite"}
                showsUserLocation
                region={{
-                  latitude: Number(selectedLocation?.latitude) || FALLBACK_LOCATION.coords.latitude,
-                  longitude: Number(selectedLocation?.longitude) || FALLBACK_LOCATION.coords.longitude,
+                  latitude: Number(data?.latitude) || FALLBACK_LOCATION.coords.latitude,
+                  longitude: Number(data?.longitude) || FALLBACK_LOCATION.coords.longitude,
                   latitudeDelta: 0.0911,
                   longitudeDelta: 0.0421
                }}
                onPress={() => { console.log("Use this to interact with the map") }}
             >
-               {selectedLocation && (
+               {data && (
                   <Marker
-                     key={selectedLocation._id}
-                     title={selectedLocation.title}
+                     key={data._id}
+                     title={data.title}
                      coordinate={{
-                        latitude: Number(selectedLocation.latitude),
-                        longitude: Number(selectedLocation.longitude),
+                        latitude: Number(data.latitude),
+                        longitude: Number(data.longitude),
                      }}
                   >
                      <Ionicons name="ios-trash-sharp" size={34} color={Colors.red} />
@@ -65,11 +67,11 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
                )}
             </MapView>
          </View>
-         <Text style={styles.title}>{selectedLocation?.title}</Text>
+         <Text style={styles.title}>{data?.title}</Text>
          <View style={styles.bottomContainer}>
-            <Text style={{ ...styles.description }}>{selectedLocation?.description}</Text>
+            <Text style={{ ...styles.description }}>{data?.description}</Text>
             <View style={styles.picturesContainer}>
-               {selectedLocation && selectedLocation?.pictures.map((pictureUrl: string, i: number) => (
+               {data && data?.pictures.map((pictureUrl: string, i: number) => (
                   <Image
                      key={i.toString()}
                      style={styles.picture}
@@ -110,9 +112,9 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
                </Pressable>
             )} */}
             <View style={styles.statusContainer}>
-               {selectedLocation?.isOpen ? (
+               {data?.isOpen ? (
                   <View style={styles.status}>
-                     {selectedLocation?.assignedTo?.length && selectedLocation?.isOpen ? (
+                     {data?.assignedTo?.length && data?.isOpen ? (
                         isAssignedToMe ? (
                            <>
                            <View style={styles.statusLabelContainer}>
