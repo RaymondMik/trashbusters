@@ -5,12 +5,16 @@ import * as Permissions from "expo-permissions";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomButtom from "../components/CustomButton";
 import Colors from "../constants"; 
+import { ImageLabels, LocationScreenStatus } from "../types";
 
 interface Props {
-   setImage: (imageUri: string) => void,
+   images: string[];
+   label: string;
+   setLocationImages: (imageUri: string[]) => void,
+   status: string;
 }
 
-const ImageHandler = ({ setImage }: Props) => {
+const ImageHandler = ({ images, label, setLocationImages, status }: Props) => {
    const [pickedImage, setPickedImage] = useState<any>(null);
 
    const verifyPermissions = async() => {
@@ -40,14 +44,29 @@ const ImageHandler = ({ setImage }: Props) => {
          quality: 0.5
       });
       
-      setImage(image.uri);
+      if (label === ImageLabels.Before) {
+         console.log(777, images);
+         const modifiedImagesState = images.length ? images.splice(0, 1, image.uri) : [image.uri]
+         // setImages(images.splice(0, 1, image.uri));
+         console.log(888, modifiedImagesState);
+         setLocationImages(modifiedImagesState);
+      } else {
+         console.log(888, images);
+         const modifiedImagesState = images.length > 1 ? images.splice(1, 1, image.uri) : [...images, image.uri];
+         console.log(999, modifiedImagesState);
+         setLocationImages(modifiedImagesState);
+         // setImage(image.uri);
+      }
+      
       setPickedImage(image.uri);
    }
 
    return (
       <View>
          <CustomButtom 
-            text={!pickedImage ? "Add image" : "Change image"}
+            text={!pickedImage 
+               ? `Add image ${status === LocationScreenStatus.CreateAndAssign ? label : ""}` 
+               : `Change image ${status === LocationScreenStatus.CreateAndAssign ? label : ""}`}
             handleOnPress={takeImageHandler}
             icon={<MaterialIcons name="add-a-photo" size={24} color={Colors.white} />}
          />

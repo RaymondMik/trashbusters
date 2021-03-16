@@ -10,7 +10,7 @@ import { FALLBACK_LOCATION } from "../../constants";
 import { FIREBASE_URI } from "../../secrets";
 import { fetchData } from "../../services";
 
-const uploadAsFile = async(uri: string, userId: string) => {
+const uploadImage = async(uri: string, userId: string) => {
    firebase.initializeApp(firebaseConfig);
    const response = await fetch(uri);
    const blob = await response.blob();
@@ -91,7 +91,7 @@ function* addLocationSaga() {
 
          // returns image URL if successfull
          // @ts-ignore
-         const addImageResponse = yield uploadAsFile(image, location.createdBy);
+         const addImageResponse = yield uploadImage(image, location.createdBy);
   
          if (!addImageResponse) {
             yield put(actions.addLocationPhotoFailure("photo error"))

@@ -6,7 +6,7 @@ import { getLocations } from "../store/actions/locations";
 import { FALLBACK_LOCATION } from "../constants";
 import { RootState, LocationScreenStatus } from "../types";
 import MapView, { Marker } from "react-native-maps";
-import { AntDesign, FontAwesome5, Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants";
 
 const LocationsListScreen = ({ navigation }: Navigation) => {
@@ -74,7 +74,7 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
                <Pressable 
                   onPress={() => { 
                      navigation.navigate("Add", {
-                        title: "Add location",
+                        title: "Report",
                         data: {},
                         status: LocationScreenStatus.Create
                   })
@@ -89,9 +89,9 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
                <Pressable 
                   onPress={() => { 
                      navigation.navigate("Add", {
-                        title: "Add location",
+                        title: "Report and collect",
                         data: {},
-                        status: LocationScreenStatus.Create
+                        status: LocationScreenStatus.CreateAndAssign
                   })
                }}>
                   <FontAwesome5 name="trash-restore" size={26} color={Colors.white} style={styles.buttonIcon} />

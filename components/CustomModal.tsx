@@ -4,7 +4,7 @@ import Modal from 'react-native-modal';
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../store/actions/modal"
 import Colors from "../constants";
-import { deleteLocation, assignLocation, markLocationAsDone } from "../store/actions/locations";
+import { deleteLocation, assignLocation } from "../store/actions/locations";
 import { RootState, LocationScreenStatus } from "../types";
 
 const CustomModal = ({ data, navigation, show }: any) => {

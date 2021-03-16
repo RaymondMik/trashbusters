@@ -113,13 +113,14 @@ const LocationsNavigator = () => {
                <Stack.Screen 
                   name="Add"
                   component={AddLocationScreen}
-                  options={{
+                  options={({ route }) => ({ 
+                     title: route?.params?.title || "Add",
                      headerStyle: styles.locationHeaderStyle,
                      headerTintColor: Colors.white,
                      headerTitleStyle: {
                         fontWeight: "bold",
                      }
-                  }}
+                  })}
                />
                <Stack.Screen 
                   name="Edit"

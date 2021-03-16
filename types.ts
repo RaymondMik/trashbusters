@@ -68,10 +68,16 @@ export interface Navigation {
 export enum LocationScreenStatus {
    View = "view",
    Create = "create",
+   CreateAndAssign = "create-and-assign",
    Edit = "edit"
 }
 
 export enum AuthStates {
    SignUp = "signup",
    SignIn = "signin"
+}
+
+export enum ImageLabels {
+   Before = "before",
+   After = "after"
 }
