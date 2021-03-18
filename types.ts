@@ -9,7 +9,8 @@ export interface Location {
    createdBy: string,
    title: string;
    description: string;
-   pictures: any[];
+   pictureBefore: string;
+   pictureAfter: string;
    latitude: string;
    longitude: string;
    assignedTo: string | null;

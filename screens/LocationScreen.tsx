@@ -1,22 +1,31 @@
-import React from "react";
-import { StyleSheet, Pressable, Text, View, Image, Alert } from "react-native";
+import React, { useState } from "react";
+import { ScrollView, StyleSheet, Pressable, Text, View, Image, Alert, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../store/actions/modal"
-import { AntDesign, MaterialCommunityIcons, MaterialIcons, Ionicons } from "@expo/vector-icons"; 
+import { AntDesign, MaterialCommunityIcons, Ionicons } from "@expo/vector-icons"; 
 import MapView, { Marker } from 'react-native-maps';
 import { Navigation, LocationScreenStatus } from "../types";
 import CustomModal from "../components/CustomModal";
+import CustomButton from "../components/CustomButton";
+import ImageHandler from "../components/ImageHandler";
 import Colors, { FALLBACK_LOCATION } from "../constants";
 import { markLocationAsDone } from "../store/actions/locations";
 import { RootState } from "../types";
 
 const LocationScreen = ({ route, navigation }: Navigation) => {
+   const [image, setImage] = useState<string | null>(null);
+
    const dispatch = useDispatch();
 
-   const { data, status } = route.params;
+   const { data: routeData, status } = route.params;
+
+   const { locations } = useSelector((state: RootState) => state);
    const modal = useSelector((state: RootState) => state.modal);
+
    const { hasError, userId } = useSelector((state: RootState) => state.auth);
 
+   const selectedLocation = locations.items.find((location: any) => location._id === routeData._id);
+   const data = selectedLocation ? selectedLocation : routeData;
    const isAssignedToMe = data.assignedTo === userId;
 
    React.useLayoutEffect(() => {
@@ -36,8 +45,10 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
       }
    }, [navigation]);
 
+   console.log(555, data?.assignedTo, image);
+
    return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
          {data && <CustomModal show={modal.show} data={data} navigation={navigation}/>}
          {hasError && Alert.alert("An Error Occurred", hasError, [{ text: 'Okay' }] )}
          <View style={styles.map}>
@@ -69,91 +80,84 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
          </View>
          <Text style={styles.title}>{data?.title}</Text>
          <View style={styles.bottomContainer}>
-            <Text style={{ ...styles.description }}>{data?.description}</Text>
-            <View style={styles.picturesContainer}>
-               {data && data?.pictures.map((pictureUrl: string, i: number) => (
-                  <Image
-                     key={i.toString()}
-                     style={styles.picture}
-                     source={{ uri: pictureUrl }}
-                     resizeMethod={"resize"}
-                  />
-               ))}
-            </View>
-            {/* {isAssignedToMe ? (
-               <View style={styles.buttonsContainer}>
-                  <Pressable
-                     onPress={() => {
-                        dispatch(assignLocation(data, ""));
-                     }}
-                  >
-                     <View style={{...styles.button, backgroundColor: Colors.grey }}>
-                        <Text style={styles.buttonText}>Unassign</Text>
-                        <FontAwesome name="hand-lizard-o" size={24} color={Colors.white} />
-                     </View>
-                  </Pressable>
-                  <Pressable>
-                     <View style={styles.button}>
-                        <Text style={styles.buttonText}>Mark as done</Text>
-                        <Feather name="check-circle" size={24} color={Colors.white} />
-                     </View>
-                  </Pressable>
-               </View>
+            {locations.isLoading ? (
+               <ActivityIndicator size="small" color={Colors.black} />
             ) : (
-               <Pressable
-                  onPress={() => {
-                     dispatch(assignLocation(data, userId));
-                  }}
-               >
-                  <View style={styles.button}>
-                     <Text style={styles.buttonText}>Assing to me</Text>
-                     <Entypo name="hand" size={24} color={Colors.white} />
-                  </View>
-               </Pressable>
-            )} */}
-            <View style={styles.statusContainer}>
-               {data?.isOpen ? (
-                  <View style={styles.status}>
-                     {data?.assignedTo?.length && data?.isOpen ? (
-                        isAssignedToMe ? (
-                           <>
-                           <View style={styles.statusLabelContainer}>
-                              <Text style={styles.statusLabel}>Assigned to you</Text>
-                              <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
-                           </View>
-                           <Pressable
-                              onPress={() => {
-                                 dispatch(markLocationAsDone(data));
-                              }}
-                           >
-                              <View style={styles.button}>
-                                 <Text style={styles.buttonText}>Done? Take a photo</Text>
-                                 <MaterialIcons name="add-a-photo" size={24} color={Colors.white} />
-                              </View>
-                           </Pressable>
-                           </>
-                        ) : (
-                           <View style={styles.statusLabelContainer}>
-                              <Text style={styles.statusLabel}>Assigned</Text>
-                              <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
-                           </View>
-                        )
-                     ) : (
-                        <View style={styles.statusLabelContainer}>
-                           <Text style={styles.statusLabel}>Unassigned</Text>
-                           <MaterialCommunityIcons name="progress-check" size={40} color="orange" />
+               <>
+                  <Text style={styles.description}>{data?.description}</Text>
+                  <View style={styles.picturesContainer}>
+                     {data.pictureBefore && (
+                        <View>
+                           {data.pictureAfter && <Text style={styles.pictureStatus}>Before</Text>}
+                           <Image
+                              key={data._id}
+                              style={styles.picture}
+                              source={{ uri: data.pictureBefore }}
+                              resizeMethod={"resize"}
+                           />
+                        </View>
+                     )}
+                     {data.pictureAfter && (
+                        <View>
+                           <Text style={styles.pictureStatus}>After</Text>
+                           <Image
+                              key={data._id}
+                              style={styles.picture}
+                              source={{ uri: data.pictureAfter || image }}
+                              resizeMethod={"resize"}
+                           />
                         </View>
                      )}
                   </View>
-               ) : (
-                  <View style={styles.status}>
-                     <Text style={styles.statusLabel}>Done</Text>
-                     <MaterialCommunityIcons name="check-circle" size={40} color={Colors.green} />
+                  <View style={styles.statusContainer}>
+                     {!data?.isOpen ? (
+                        <View style={styles.status}>
+                           <View style={styles.statusLabelContainer}>
+                              <Text style={styles.statusLabel}>Done</Text>
+                              <MaterialCommunityIcons name="check-circle" size={40} color={Colors.green} />
+                           </View>
+                        </View>
+                     ) : (
+                        <View style={styles.status}>
+                           {data?.assignedTo?.length && data?.isOpen ? (
+                              isAssignedToMe ? (
+                                 <>
+                                    <View style={styles.statusLabelContainer}>
+                                       <Text style={styles.statusLabel}>Assigned to you</Text>
+                                       <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                                    </View>
+                                    <View style={styles.picturePreviewContainer}>
+                                       <ImageHandler label="Cleaned? Take a photo!" setImage={setImage} />
+                                    </View>
+                                 </>
+                              ) : (
+                                 <View style={styles.statusLabelContainer}>
+                                    <Text style={styles.statusLabel}>Assigned</Text>
+                                    <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                                 </View>
+                              )
+                           ) : (
+                              <View style={styles.statusLabelContainer}>
+                                 <Text style={styles.statusLabel}>Unassigned</Text>
+                                 <MaterialCommunityIcons name="progress-check" size={40} color="orange" />
+                              </View>
+                           )}
+                        </View>
+                     )}
+                     {image && isAssignedToMe && (
+                        <CustomButton
+                           text="Mark as done"
+                           handleOnPress={() => {
+                              dispatch(markLocationAsDone({ _id: data._id, image }));
+                           }}
+                           icon={<AntDesign name="checksquareo" size={24} color={Colors.white} />}
+                        />
+                     )} 
                   </View>
-               )}
-            </View>
+               </>
+            )}
          </View>
-      </View>
+      </ScrollView>
    );
 }
 
@@ -162,8 +166,6 @@ const styles = StyleSheet.create({
       flex: 1,
       width: "100%",
       height: "100%",
-      alignItems: "center",
-      justifyContent: "flex-start",
       backgroundColor: Colors.green,
    },
    headerText: {
@@ -192,8 +194,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
    },
    statusLabelContainer: {
-      marginTop: -35,
-      marginBottom: 15,
+      marginVertical: 15,
       flexDirection: "row",
       alignItems: "center",
       backgroundColor: Colors.white,
@@ -201,8 +202,9 @@ const styles = StyleSheet.create({
       shadowOffset:{  width: 3,  height: 3 },
       shadowColor: 'black',
       shadowOpacity: 0.5,
-      paddingHorizontal: 8,
-      paddingVertical: 3
+      paddingHorizontal: 15,
+      paddingVertical: 3,
+      justifyContent: "center"
    },
    statusLabel: {
       marginRight: 5,
@@ -225,17 +227,21 @@ const styles = StyleSheet.create({
       marginTop: 20
    },
    picture: {
-      width: 220,
-      height: 220,
+      width: 280,
+      height: 280,
       margin: 10,
       borderColor: Colors.lightGrey,
-      borderWidth: 15,
+      borderWidth: 12,
       borderRadius: 20
    },
-   // buttonsContainer: {
-   //    flexDirection: "row",
-   //    justifyContent: "space-between",
-   // },
+   picturePreviewContainer: {
+      marginTop: 20
+   },
+   pictureStatus: {
+      fontSize: 18,
+      fontWeight: "bold",
+      textAlign: "center"
+   },
    button: {
       flexDirection: "row",
       justifyContent: "center",

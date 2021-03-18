@@ -129,6 +129,7 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
       }
       case actions.ASSIGN_LOCATION_SUCCESS: {
          const { location, userId } = action.payload;
+         console.log(333, location);
 
          const mappedItems = state.items.map((item: Location) => {
             if (item._id === location) {
@@ -140,6 +141,12 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          return {
             ...state,
             items: mappedItems
+         }
+      }
+      case actions.MARK_LOCATION_AS_DONE: {
+         return {
+            ...state,
+            isLoading: true
          }
       }
       case actions.MARK_LOCATION_AS_DONE_SUCCESS: {
@@ -155,7 +162,15 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          })
          return {
             ...state,
-            items: mappedItems
+            items: mappedItems,
+            isLoading: false
+         }
+      }
+      case actions.MARK_LOCATION_AS_DONE_FAILURE: {
+         return {
+            ...state,
+            isLoading: false,
+            hasError: action.payload
          }
       }
       case actions.ADD_NOTIFICATION_TOKEN: {

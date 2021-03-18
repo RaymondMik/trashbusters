@@ -134,7 +134,7 @@ export const assignLocationFailure = (payload: string) => ({
    payload
 });
 
-export const markLocationAsDone = (location: Location) => ({
+export const markLocationAsDone = (location: any) => ({
    type: MARK_LOCATION_AS_DONE,
    payload: {
       location

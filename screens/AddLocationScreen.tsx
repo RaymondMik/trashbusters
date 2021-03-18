@@ -28,7 +28,7 @@ const AddLocationScreen = ({ route, navigation }: any) => {
    const [currentLocation, setCurrentLocation] = useState<UserGPSLocation | null>(null);
    const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(true);
    const [locationHasErrored, setLocationHasErrored] = useState<boolean>(false);
-   const [image, setImage] = useState<any>(null);
+   const [image, setImage] = useState<string>("");
    const [hasNoImage, setHasNoImage] = useState<boolean>(false);
 
    const dispatch = useDispatch();
@@ -178,7 +178,7 @@ const AddLocationScreen = ({ route, navigation }: any) => {
                            isTextArea
                         />
                         <View style={styles.imagePreviewContainer}>
-                           <ImageHandler label="" status="" setImage={setImage} />
+                           <ImageHandler label="Add image" setImage={setImage} />
                         </View>
                      </View>
                   </>

@@ -9,11 +9,11 @@ import { ImageLabels, LocationScreenStatus } from "../types";
 
 interface Props {
    label: string;
-   setImage: (imageUri: string[]) => void,
-   status: string;
+   setImage: (imageUri: string) => void;
+   showPreview?: boolean;
 }
 
-const ImageHandler = ({ label, setImage, status }: Props) => {
+const ImageHandler = ({ label, setImage, showPreview = true }: Props) => {
    const [pickedImage, setPickedImage] = useState<any>(null);
 
    const verifyPermissions = async() => {
@@ -47,27 +47,33 @@ const ImageHandler = ({ label, setImage, status }: Props) => {
       setPickedImage(image.uri);
    }
 
+   console.log(444, pickedImage, showPreview)
+
    return (
-      <View>
+      <View style={styles.container}>
          <CustomButtom 
-            text={!pickedImage 
-               ? `Add image ${status === LocationScreenStatus.CreateAndAssign ? label : ""}` 
-               : `Change image ${status === LocationScreenStatus.CreateAndAssign ? label : ""}`}
+            text={!pickedImage ? label : "Change image"}
             handleOnPress={takeImageHandler}
             icon={<MaterialIcons name="add-a-photo" size={24} color={Colors.white} />}
          />
-         <Image style={styles.imagePreview} source={{ uri: pickedImage }}/>
+         { pickedImage && showPreview && <Image style={styles.imagePreview} source={{ uri: pickedImage }}/> }
       </View>
    );
 };
 
 const styles = StyleSheet.create({
-   imagePreview: {
-      width: "100%",
-      height: 250,
-      marginBottom: 10,
+   container: {
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+   },
+   imagePreview: {
+      width: 280,
+      height: 280,
+      marginBottom: 10,
+      margin: 10,
+      borderColor: Colors.lightGrey,
+      borderWidth: 12,
+      borderRadius: 20
    }
 })
 

@@ -107,7 +107,7 @@ function* addLocationSaga() {
                headers: {
                   "Content-Type": "application/json"
                },
-               body: JSON.stringify({ ...location, pictures: [addImageResponse] })
+               body: JSON.stringify({ ...location, pictureBefore: addImageResponse })
             }
          });
 
@@ -128,8 +128,6 @@ function* addLocationSaga() {
             navigation.navigate("Home");
          } else {
             const _id = newItem.name
-
-            console.log(333, `${FIREBASE_URI}/locations/${_id}.json`);
 
             // @ts-ignore
             const locationResponse: any = yield call(fetchData, { endpoint: `${FIREBASE_URI}/locations/${_id}.json` });
@@ -157,33 +155,46 @@ function* updateLocationSaga() {
    ], function* ({ type, payload }: any) {
       try {
          const { token } = yield select(state => state.auth);
-         const { location: { _id, title, description, createdBy, notificationToken }, userId } = payload;
 
+         console.log(666, payload);
+ 
          let body: string = JSON.stringify({});
 
          if (type === actions.UPDATE_LOCATION) {
             body = JSON.stringify({
-               title,
-               description
+               title: payload.location.title,
+               description: payload.location.description
             })
          }
 
          if (type === actions.ASSIGN_LOCATION) {
             body = JSON.stringify({
-               assignedTo: userId
+               assignedTo: payload.userId
             })
          }
 
          if (type === actions.MARK_LOCATION_AS_DONE) {
+            console.log(661, payload);
+            // returns image URL if successfull
+            // @ts-ignore
+            const addImageResponse = yield uploadImage(payload.location.image, payload.location._id);
+
+            if (!addImageResponse) {
+               yield put(actions.addLocationPhotoFailure("photo error"))
+               return;
+            }
+
             body = JSON.stringify({
                isOpen: false,
-               assignedTo: ""
+               assignedTo: "",
+               pictureAfter: addImageResponse
             })
          }
 
+         console.log(777, body);
          // @ts-ignore
          const response = yield call(fetchData, {
-            endpoint: `${FIREBASE_URI}/locations/${_id}.json?auth=${token}`,
+            endpoint: `${FIREBASE_URI}/locations/${payload.location._id}.json?auth=${token}`,
             params: {
                method: "PATCH",
                headers: {
@@ -206,15 +217,14 @@ function* updateLocationSaga() {
          
          if (type === actions.ASSIGN_LOCATION) {
             yield all([
-               put(actions.assignLocationSuccess(_id, payload.userId)),
+               put(actions.assignLocationSuccess(payload.location._id, payload.userId)),
                put(toggleModal())
             ]);
          } 
          
          if (type === actions.MARK_LOCATION_AS_DONE) {
             yield all([
-               put(actions.markLocationAsDoneSuccess(_id)),
-               put(toggleModal())
+               put(actions.markLocationAsDoneSuccess(payload.location._id)),
             ]);
 
             // @ts-ignore
@@ -228,9 +238,9 @@ function* updateLocationSaga() {
                      "Content-Type": "application/json"
                      },
                      body: JSON.stringify({
-                     to: notificationToken,
+                     to: payload.location.notificationToken,
                      title: "Location is done!",
-                     body: `Your location ${title} was marked as done by ${createdBy}`
+                     body: `Your location ${payload.location.title} was marked as done by ${payload.location.createdBy}`
                   })
                }
             })

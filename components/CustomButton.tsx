@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
    },
    buttonText: {
       color: Colors.white,
-      marginRight: 5
+      marginRight: 5,
+      fontWeight: "bold"
    },
 })
 
