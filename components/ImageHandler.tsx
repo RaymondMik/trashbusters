@@ -47,8 +47,6 @@ const ImageHandler = ({ label, setImage, showPreview = true }: Props) => {
       setPickedImage(image.uri);
    }
 
-   console.log(444, pickedImage, showPreview)
-
    return (
       <View style={styles.container}>
          <CustomButtom 

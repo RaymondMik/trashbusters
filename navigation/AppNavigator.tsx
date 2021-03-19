@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, StyleSheet, Pressable, SafeAreaView, Button, View } from "react-native";
+import { Platform, StyleSheet, Pressable, SafeAreaView, View, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -156,18 +156,30 @@ const AppNavigator = () => {
 
    return (
       <DrawerNavigator.Navigator
+         overlayColor="transparent"
+         drawerContentOptions={{
+            activeTintColor: Colors.white,
+            inactiveTintColor: Colors.white,
+          }}
+         drawerStyle={{
+            backgroundColor: "rgba(0,0,0,0.9)",
+            width: 240,
+            
+          }}
          drawerContent={props => {
             return (
             <View style={{ flex: 1, paddingTop: 20 }}>
                <SafeAreaView>
                   <DrawerItemList {...props} />
-                  <Button
-                  title="Logout"
-                  onPress={() => {
-                     AsyncStorage.removeItem(ASYNC_STORAGE_USER_DATA_KEY);
-                     dispatch(authenticateLogout());
-                  }}
-                  />
+                  <Pressable
+                     style={{marginTop: 50, marginLeft: 20}}
+                     onPress={() => {
+                        AsyncStorage.removeItem(ASYNC_STORAGE_USER_DATA_KEY);
+                        dispatch(authenticateLogout());
+                     }}
+                  >
+                     <Text style={{color: "white"}}>Logout</Text>
+                  </Pressable>
                </SafeAreaView>
             </View>
             );
@@ -175,6 +187,10 @@ const AppNavigator = () => {
      >
        <DrawerNavigator.Screen
          name="Locations"
+         component={LocationsNavigator}
+       />
+       <DrawerNavigator.Screen
+         name="Account"
          component={LocationsNavigator}
        />
      </DrawerNavigator.Navigator>

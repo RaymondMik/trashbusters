@@ -80,82 +80,81 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
          </View>
          <Text style={styles.title}>{data?.title}</Text>
          <View style={styles.bottomContainer}>
-            {locations.isLoading ? (
-               <ActivityIndicator size="small" color={Colors.black} />
-            ) : (
-               <>
-                  <Text style={styles.description}>{data?.description}</Text>
-                  <View style={styles.picturesContainer}>
-                     {data.pictureBefore && (
-                        <View>
-                           {data.pictureAfter && <Text style={styles.pictureStatus}>Before</Text>}
-                           <Image
-                              key={data._id}
-                              style={styles.picture}
-                              source={{ uri: data.pictureBefore }}
-                              resizeMethod={"resize"}
-                           />
-                        </View>
-                     )}
-                     {data.pictureAfter && (
-                        <View>
-                           <Text style={styles.pictureStatus}>After</Text>
-                           <Image
-                              key={data._id}
-                              style={styles.picture}
-                              source={{ uri: data.pictureAfter || image }}
-                              resizeMethod={"resize"}
-                           />
-                        </View>
-                     )}
-                  </View>
-                  <View style={styles.statusContainer}>
-                     {!data?.isOpen ? (
-                        <View style={styles.status}>
-                           <View style={styles.statusLabelContainer}>
-                              <Text style={styles.statusLabel}>Done</Text>
-                              <MaterialCommunityIcons name="check-circle" size={40} color={Colors.green} />
-                           </View>
-                        </View>
-                     ) : (
-                        <View style={styles.status}>
-                           {data?.assignedTo?.length && data?.isOpen ? (
-                              isAssignedToMe ? (
-                                 <>
-                                    <View style={styles.statusLabelContainer}>
-                                       <Text style={styles.statusLabel}>Assigned to you</Text>
-                                       <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
-                                    </View>
-                                    <View style={styles.picturePreviewContainer}>
-                                       <ImageHandler label="Cleaned? Take a photo!" setImage={setImage} />
-                                    </View>
-                                 </>
-                              ) : (
-                                 <View style={styles.statusLabelContainer}>
-                                    <Text style={styles.statusLabel}>Assigned</Text>
-                                    <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
-                                 </View>
-                              )
-                           ) : (
-                              <View style={styles.statusLabelContainer}>
-                                 <Text style={styles.statusLabel}>Unassigned</Text>
-                                 <MaterialCommunityIcons name="progress-check" size={40} color="orange" />
-                              </View>
-                           )}
-                        </View>
-                     )}
-                     {image && isAssignedToMe && (
-                        <CustomButton
-                           text="Mark as done"
-                           handleOnPress={() => {
-                              dispatch(markLocationAsDone({ _id: data._id, image }));
-                           }}
-                           icon={<AntDesign name="checksquareo" size={24} color={Colors.white} />}
-                        />
-                     )} 
-                  </View>
-               </>
+            {locations.isLoading && (
+               <View style={styles.activityIndicatorPanel}>
+                  <ActivityIndicator size="large" color={Colors.black} />
+               </View>
             )}
+            <Text style={styles.description}>{data?.description}</Text>
+            <View style={styles.picturesContainer}>
+               {data.pictureBefore && (
+                  <View>
+                     {data.pictureAfter && <Text style={styles.pictureStatus}>Before</Text>}
+                     <Image
+                        key={data._id}
+                        style={styles.picture}
+                        source={{ uri: data.pictureBefore }}
+                        resizeMethod={"resize"}
+                     />
+                  </View>
+               )}
+               {data.pictureAfter && (
+                  <View>
+                     <Text style={styles.pictureStatus}>After</Text>
+                     <Image
+                        key={data._id}
+                        style={styles.picture}
+                        source={{ uri: data.pictureAfter || image }}
+                        resizeMethod={"resize"}
+                     />
+                  </View>
+               )}
+            </View>
+            <View style={styles.statusContainer}>
+               {!data?.isOpen ? (
+                  <View style={styles.status}>
+                     <View style={styles.statusLabelContainer}>
+                        <Text style={styles.statusLabel}>Done</Text>
+                        <MaterialCommunityIcons name="check-circle" size={40} color={Colors.green} />
+                     </View>
+                  </View>
+               ) : (
+                  <View style={styles.status}>
+                     {data?.assignedTo?.length && data?.isOpen ? (
+                        isAssignedToMe ? (
+                           <>
+                              <View style={styles.statusLabelContainer}>
+                                 <Text style={styles.statusLabel}>Assigned to you</Text>
+                                 <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                              </View>
+                              <View style={styles.picturePreviewContainer}>
+                                 <ImageHandler label="Cleaned? Take a photo!" setImage={setImage} />
+                              </View>
+                           </>
+                        ) : (
+                           <View style={styles.statusLabelContainer}>
+                              <Text style={styles.statusLabel}>Assigned</Text>
+                              <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
+                           </View>
+                        )
+                     ) : (
+                        <View style={styles.statusLabelContainer}>
+                           <Text style={styles.statusLabel}>Unassigned</Text>
+                           <MaterialCommunityIcons name="progress-check" size={40} color="orange" />
+                        </View>
+                     )}
+                  </View>
+               )}
+               {image && isAssignedToMe && (
+                  <CustomButton
+                     text="Mark as done"
+                     handleOnPress={() => {
+                        dispatch(markLocationAsDone({ _id: data._id, image }));
+                     }}
+                     icon={<AntDesign name="checksquareo" size={24} color={Colors.white} />}
+                  />
+               )} 
+            </View>
          </View>
       </ScrollView>
    );
@@ -184,6 +183,20 @@ const styles = StyleSheet.create({
       backgroundColor: Colors.white,
       borderTopLeftRadius: 40,
       borderTopRightRadius: 40,
+   },
+   activityIndicatorPanel: {
+      position: "absolute",
+      top: 0,
+      left:  0,
+      flex: 1,
+      zIndex: 1,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(255,255,255, 0.8)",
+      alignItems: "center",
+      justifyContent: "center",
+      borderTopLeftRadius: 40,
+      borderTopRightRadius: 40
    },
    statusContainer: {
       width: "100%",
