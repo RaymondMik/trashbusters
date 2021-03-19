@@ -1,8 +1,7 @@
 import { all, call, put, takeLatest, select } from "redux-saga/effects";
 import * as Permissions from "expo-permissions";
 import * as LocationPicker from "expo-location";
-import firebase from "firebase";
-import firebaseConfig from "../../firebase";
+import firebaseInit from "../../firebase";
 import { Location } from "../../types";
 import * as actions from "../actions/locations";
 import { toggleModal } from "../actions/modal"
@@ -12,7 +11,6 @@ import { fetchData } from "../../services";
 import { LocationScreenStatus } from "../../types";
 
 const uploadImage = async(uri: string, userId: string) => {
-   firebase.initializeApp(firebaseConfig);
    const response = await fetch(uri);
    const blob = await response.blob();
 
@@ -21,7 +19,7 @@ const uploadImage = async(uri: string, userId: string) => {
    };
  
    let name = new Date().getTime() + "-media.jpg"
-   const ref = firebase
+   const ref = firebaseInit
      .storage()
      .ref()
      .child(`${userId}/` + name)
@@ -36,7 +34,7 @@ const uploadImage = async(uri: string, userId: string) => {
             reject(err)
          }, () => {
             // gets the download url then sets the image from firebase as the value for the imgUrl key:
-            firebase
+            firebaseInit
                .storage()
                .ref()
                .child(`${userId}/` + name).getDownloadURL()
