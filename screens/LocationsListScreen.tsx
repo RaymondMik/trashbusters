@@ -1,16 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigation } from "../types";
 import { getLocations } from "../store/actions/locations";
 import { FALLBACK_LOCATION } from "../constants";
-import { RootState, LocationScreenStatus } from "../types";
+import { RootState, LocationScreenStatus, LocationsListFilters, Location } from "../types";
 import MapView, { Marker } from "react-native-maps";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants";
 
-const LocationsListScreen = ({ navigation }: Navigation) => {
+const LocationsListScreen = ({ route, navigation }: Navigation) => {
+   const [filteredItems, setFilteredItems] = useState([]);
    const { items, userGPSLocation, isLoading, hasError } = useSelector((state: RootState) => state.locations);
+   const { filterType } = route.params;
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -18,8 +20,19 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
          dispatch(getLocations());
       });
       
+      setFilteredItems(() => {
+         if (filterType === LocationsListFilters.Assigned) {
+            return items.filter((item: Location) => item.assignedTo?.length);
+         } else if (filterType === LocationsListFilters.Done) {
+            return items.filter((item: Location) => !item.isOpen);
+         } else {
+            return items;
+         }
+      })
+
       return locations;
-   }, [navigation])
+
+   }, [navigation, items]);
 
    if (hasError) {
       return (
@@ -31,7 +44,7 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
 
    return (
       <View style={{ flex: 1 }}>
-         {isLoading && !items.length && (
+         {isLoading && !filteredItems.length && (
             <View style={styles.centeredView}>
                <ActivityIndicator size="large" color="black" />
             </View>
@@ -48,7 +61,7 @@ const LocationsListScreen = ({ navigation }: Navigation) => {
             }}
             onPress={() => { console.log("Use this to interact with the map") }}
          >
-            {items.map((item: any) => (
+            {filteredItems.map((item: any) => (
                <Marker
                   key={item._id}
                   title={item.title}

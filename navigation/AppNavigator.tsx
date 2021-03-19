@@ -7,8 +7,6 @@ import {
    createDrawerNavigator,
    DrawerItemList
  } from "@react-navigation/drawer";
-import CollectedScreen from "../screens/CollectedScreen";
-import InProgressScreen from "../screens/InProgressScreen";
 import { AntDesign, Ionicons } from "@expo/vector-icons"; 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import EditLocationScreen from "../screens/EditLocationScreen";
@@ -19,7 +17,7 @@ import AuthScreen from "../screens/AuthScreen";
 import StartUpScreen from "../screens/StartUpScreen";
 import { authenticateLogout } from "../store/actions/auth";
 import Colors, { ASYNC_STORAGE_USER_DATA_KEY } from "../constants";
-import { RootState, Navigation } from "../types";
+import { RootState, Navigation, LocationsListFilters } from "../types";
 
 const Tabs = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -56,22 +54,25 @@ const TabsNavigator = ({ navigation }: Navigation) => {
             tabBarIcon: ({ color, size }: any) => (
                <AntDesign name="home" size={size} color={color} />
             )}}
+            initialParams={{ filterType: LocationsListFilters.All }}
          />
          <Tabs.Screen
             name="In Progress"
-            component={InProgressScreen}
+            component={LocationsListScreen}
             options={{
             tabBarIcon: ({ color, size }: any) => (
                <AntDesign name="loading1" size={size} color={color}/>
             )}}
+            initialParams={{ filterType: LocationsListFilters.Assigned }}
          />
          <Tabs.Screen
             name="Collected"
-            component={CollectedScreen}
+            component={LocationsListScreen}
             options={{
             tabBarIcon: ({ color, size }: any) => (
                <AntDesign name="check" size={size} color={color} />
             )}}
+            initialParams={{ filterType: LocationsListFilters.Done }}
          />
       </Tabs.Navigator>
    );

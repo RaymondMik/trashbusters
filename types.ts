@@ -82,3 +82,9 @@ export enum ImageLabels {
    Before = "before",
    After = "after"
 }
+
+export enum LocationsListFilters {
+   All = "all",
+   Assigned = "assigned",
+   Done = "done"
+}
