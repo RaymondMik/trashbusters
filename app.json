@@ -5,11 +5,11 @@
     "privacy": "public",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/locations_icon.png",
+    "icon": "./assets/trashbusters.png",
     "splash": {
-      "image": "./assets/locations_splash_icon.png",
+      "image": "./assets/trashbusters_splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#171717"
+      "backgroundColor": "#009688"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,8 +26,8 @@
       "package": "dev.emerald_river.trashbusters",
       "versionCode": 0,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/locations_icon.png",
-        "backgroundColor": "#171717"
+        "foregroundImage": "./assets/trashbusters.png",
+        "backgroundColor": "#009688"
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
