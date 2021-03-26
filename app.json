@@ -3,7 +3,7 @@
     "name": "Trashbusters",
     "slug": "trashbusters",
     "privacy": "public",
-    "version": "1.0.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "icon": "./assets/trashbusters.png",
     "splash": {
@@ -18,13 +18,13 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "dev.emerald-river.trashbusters",
-      "buildNumber": "0.1.0",
+      "bundleIdentifier": "dev.emerald-river.trashbusters.test",
+      "buildNumber": "0.2.0",
       "supportsTablet": true
     },
     "android": {
-      "package": "dev.emerald_river.trashbusters",
-      "versionCode": 0,
+      "package": "dev.emerald_river.trashbusters.test",
+      "versionCode": 2,
       "adaptiveIcon": {
         "foregroundImage": "./assets/trashbusters.png",
         "backgroundColor": "#009688"

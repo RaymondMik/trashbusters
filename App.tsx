@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import createSagaMiddleware from "redux-saga"
+import createSagaMiddleware from "redux-saga";
 import { Provider } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { NavigationContainer } from "@react-navigation/native";
