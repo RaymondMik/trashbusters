@@ -13,7 +13,7 @@ jobs:
       with:
         personal_token: ${{ secrets.PERSONAL_TOKEN }}
         src_path: store
-        dst_path: src/
+        dst_path: src
         dst_owner: RaymondMik
         dst_repo_name: trashbusters-web
         dst_branch: main
