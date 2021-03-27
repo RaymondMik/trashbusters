@@ -27,6 +27,7 @@ jobs:
           source-directory: 'store'
           destination-github-username: 'RaymondMik'
           destination-repository-name: 'trashbusters-web'
+          target-branch: 'main'
           user-email: ramon.miklus@gmail.com
           commit-message: See ORIGIN_COMMIT
       - name: Test get variable exported by push-to-another-repository
