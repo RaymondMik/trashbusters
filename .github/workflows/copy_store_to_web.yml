@@ -1,0 +1,24 @@
+name: Copy
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Copycat
+      uses: andstor/copycat-action@v3
+      with:
+        personal_token: ${{ secrets.PERSONAL_TOKEN }}
+        src_path: /store
+        dst_path: /src/
+        dst_owner: RaymondMik
+        dst_repo_name: trashbusters-web
+        dst_branch: main
+        src_branch: main
+        src_wiki: false
+        dst_wiki: false
+        username: RaymondMik
+        email: ramon.miklus@gmail.com
