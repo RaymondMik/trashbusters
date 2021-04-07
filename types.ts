@@ -39,6 +39,7 @@ export interface LocationsState {
    hasPhotoError: string | null;
    userGPSLocation: UserGPSLocation | null;
    notificationToken: string | null;
+   image: string | null;
 };
 
 export interface AuthState {

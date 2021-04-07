@@ -25,6 +25,7 @@ const uploadImage = async(uri: string, userId: string) => {
      .child(`${userId}/` + name)
  
    const task = ref.put(blob, metadata);
+   
    return new Promise((resolve, reject) => {
       task.on("state_changed", 
          (snapshot) => {
@@ -33,17 +34,41 @@ const uploadImage = async(uri: string, userId: string) => {
          }, (err) => {
             reject(err)
          }, () => {
-            // gets the download url then sets the image from firebase as the value for the imgUrl key:
-            firebaseInit
-               .storage()
-               .ref()
-               .child(`${userId}/` + name).getDownloadURL()
-               .then(fireBaseUrl => {
-                  resolve(fireBaseUrl)
-               })
-         })
-      });
- }
+         // gets the download url then sets the image from firebase as the value for the imgUrl key:
+         firebaseInit
+            .storage()
+            .ref()
+            .child(`${userId}/` + name).getDownloadURL()
+            .then(fireBaseUrl => {
+               resolve(fireBaseUrl)
+            })
+      })
+   });
+}
+
+const deleteImage = async (name: string) => {
+   await firebaseInit
+      .storage()
+      .ref()
+      .child(name)
+      .delete()
+}
+
+function* uploadImageSaga() {
+   yield takeLatest(actions.ADD_LOCATION_PHOTO, function* ({ payload }: any) {
+      try {
+         const { uri, userId } = payload;
+
+         // @ts-ignore
+         const addImageResponse = yield uploadImage(uri, userId);
+         console.log(333, addImageResponse);
+  
+         yield put(actions.addLocationPhotoSuccess(addImageResponse))
+      } catch (e) {
+         yield put(actions.addLocationPhotoFailure("photo error"))
+      }
+   });
+}
 
 function* fetchLocationsSaga() {
    yield takeLatest(actions.GET_LOCATIONS, function* () {
@@ -88,15 +113,6 @@ function* addLocationSaga() {
          const { token } = yield select(state => state.auth);
          const { location, image, navigation } = payload;
 
-         // returns image URL if successfull
-         // @ts-ignore
-         const addImageResponse = yield uploadImage(image, location.createdBy);
-  
-         if (!addImageResponse) {
-            yield put(actions.addLocationPhotoFailure("photo error"))
-            return;
-         }
-
          // @ts-ignore
          const response = yield call(fetchData, {
             endpoint: `${FIREBASE_URI}/locations.json?auth=${token}`,
@@ -105,7 +121,7 @@ function* addLocationSaga() {
                headers: {
                   "Content-Type": "application/json"
                },
-               body: JSON.stringify({ ...location, pictureBefore: addImageResponse })
+               body: JSON.stringify({ ...location, pictureBefore: image })
             }
          });
 
@@ -189,7 +205,6 @@ function* updateLocationSaga() {
             })
          }
 
-         console.log(777, body);
          // @ts-ignore
          const response = yield call(fetchData, {
             endpoint: `${FIREBASE_URI}/locations/${payload.location._id}.json?auth=${token}`,
@@ -292,6 +307,7 @@ export default function* locationsSaga() {
       fetchLocationsSaga(),
       addLocationSaga(),
       updateLocationSaga(),
-      deleteLocationSaga()
+      deleteLocationSaga(),
+      uploadImageSaga()
    ]);
 }

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Pressable, ActivityIndicator } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { Navigation } from "../types";
 import { getLocations } from "../store/actions/locations";
 import { FALLBACK_LOCATION } from "../constants";
-import { RootState, LocationScreenStatus, LocationsListFilters, Location } from "../types";
+import { Navigation , RootState, LocationScreenStatus, LocationsListFilters, Location } from "../types";
 import MapView, { Marker } from "react-native-maps";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import Colors from "../constants";

@@ -28,7 +28,6 @@ const AddLocationScreen = ({ route, navigation }: any) => {
    const [currentLocation, setCurrentLocation] = useState<UserGPSLocation | null>(null);
    const [isLoadingLocation, setIsLoadingLocation] = useState<boolean>(true);
    const [locationHasErrored, setLocationHasErrored] = useState<boolean>(false);
-   const [image, setImage] = useState<string>("");
    const [hasNoImage, setHasNoImage] = useState<boolean>(false);
 
    const dispatch = useDispatch();
@@ -37,7 +36,7 @@ const AddLocationScreen = ({ route, navigation }: any) => {
    const { params: { status } } = route;
 
    const { userId, hasError: authError } = useSelector((state: RootState) => state.auth);
-   const { isLoading, hasPhotoError, notificationToken } = useSelector((state: RootState) => state.locations);
+   const { isLoading, hasPhotoError, notificationToken, image } = useSelector((state: RootState) => state.locations);
 
    useEffect(() => {
       (async () => {
@@ -178,7 +177,7 @@ const AddLocationScreen = ({ route, navigation }: any) => {
                            isTextArea
                         />
                         <View style={styles.imagePreviewContainer}>
-                           <ImageHandler label="Add image" setImage={setImage} />
+                           <ImageHandler label="Add image" />
                         </View>
                      </View>
                   </>

@@ -1,20 +1,23 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Alert, Pressable, Image } from "react-native";
+import { StyleSheet, View, Alert, Image, ActivityIndicator } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomButtom from "../components/CustomButton";
 import Colors from "../constants"; 
-import { ImageLabels, LocationScreenStatus } from "../types";
+import { addLocationPhoto } from "../store/actions/locations";
+import { RootState } from "../types";
 
 interface Props {
    label: string;
-   setImage: (imageUri: string) => void;
    showPreview?: boolean;
 }
 
-const ImageHandler = ({ label, setImage, showPreview = true }: Props) => {
-   const [pickedImage, setPickedImage] = useState<any>(null);
+const ImageHandler = ({ label, showPreview = true }: Props) => {
+   const dispatch = useDispatch();
+   const { userId } = useSelector((state: RootState) => state.auth);
+   const { isLoading, image } = useSelector((state: RootState) => state.locations);
 
    const verifyPermissions = async() => {
       const result = await Permissions.askAsync(Permissions.CAMERA);
@@ -41,20 +44,21 @@ const ImageHandler = ({ label, setImage, showPreview = true }: Props) => {
          allowsEditing: true,
          aspect: [16, 9],
          quality: 0.5
-      });
-            
-      setImage(image.uri);
-      setPickedImage(image.uri);
+      });      
+      dispatch(addLocationPhoto(image.uri, userId))
    }
+
+   console.log(9898, isLoading);
 
    return (
       <View style={styles.container}>
          <CustomButtom 
-            text={!pickedImage ? label : "Change image"}
+            text={!image ? label : "Change image"}
             handleOnPress={takeImageHandler}
             icon={<MaterialIcons name="add-a-photo" size={24} color={Colors.white} />}
          />
-         { pickedImage && showPreview && <Image style={styles.imagePreview} source={{ uri: pickedImage }}/> }
+         { isLoading && !image && <ActivityIndicator size="small" color={Colors.green} /> }
+         { !isLoading && image && showPreview && <Image style={styles.imagePreview} source={{ uri: image }}/> }
       </View>
    );
 };

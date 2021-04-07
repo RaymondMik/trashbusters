@@ -9,7 +9,8 @@ const initialState: LocationsState = {
    hasError: null,
    hasPhotoError: null,
    userGPSLocation: null,
-   notificationToken: null
+   notificationToken: null,
+   image: null
 };
 
 const locationsReducer = (state: LocationsState = initialState, action: any) => {
@@ -129,8 +130,7 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
       }
       case actions.ASSIGN_LOCATION_SUCCESS: {
          const { location, userId } = action.payload;
-         console.log(333, location);
-
+  
          const mappedItems = state.items.map((item: Location) => {
             if (item._id === location) {
                item.assignedTo = userId;
@@ -167,6 +167,28 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          }
       }
       case actions.MARK_LOCATION_AS_DONE_FAILURE: {
+         return {
+            ...state,
+            isLoading: false,
+            hasError: action.payload
+         }
+      }
+      case actions.ADD_LOCATION_PHOTO: {
+         return {
+            ...state,
+            isLoading: true,
+            hasError: null,
+            image: null
+         }
+      }
+      case actions.ADD_LOCATION_PHOTO_SUCCESS: {
+         return {
+            ...state,
+            isLoading: false,
+            image: action.payload
+         }
+      }
+      case actions.ADD_LOCATION_PHOTO_FAILURE: {
          return {
             ...state,
             isLoading: false,

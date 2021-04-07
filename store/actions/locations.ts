@@ -65,8 +65,14 @@ export const addLocationFailure = (payload: string) => ({
    payload
 });
 
-export const addLocationPhoto = () => ({
+export const addLocationPhoto = (uri: string, userId: string) => ({
    type: ADD_LOCATION_PHOTO,
+   payload: { uri, userId }
+});
+
+export const addLocationPhotoSuccess = (payload: string) => ({
+   type: ADD_LOCATION_PHOTO_SUCCESS,
+   payload
 });
 
 export const addLocationPhotoFailure = (payload: string) => ({
