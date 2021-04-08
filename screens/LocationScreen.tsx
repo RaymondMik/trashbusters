@@ -13,16 +13,15 @@ import { markLocationAsDone } from "../store/actions/locations";
 import { RootState } from "../types";
 
 const LocationScreen = ({ route, navigation }: Navigation) => {
-   const [image, setImage] = useState<string | null>(null);
-
    const dispatch = useDispatch();
 
    const { data: routeData, status } = route.params;
 
    const { locations } = useSelector((state: RootState) => state);
+   const { hasError, userId } = useSelector((state: RootState) => state.auth);
    const modal = useSelector((state: RootState) => state.modal);
 
-   const { hasError, userId } = useSelector((state: RootState) => state.auth);
+   const { image } = locations;
 
    const selectedLocation = locations.items.find((location: any) => location._id === routeData._id);
    const data = selectedLocation ? selectedLocation : routeData;
@@ -44,8 +43,6 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
          });
       }
    }, [navigation]);
-
-   console.log(555, data?.assignedTo, image);
 
    return (
       <ScrollView style={styles.container}>
@@ -128,7 +125,7 @@ const LocationScreen = ({ route, navigation }: Navigation) => {
                                  <MaterialCommunityIcons name="progress-wrench" size={40} color={Colors.green} />
                               </View>
                               <View style={styles.picturePreviewContainer}>
-                                 <ImageHandler label="Cleaned? Take a photo!" setImage={setImage} />
+                                 <ImageHandler label="Cleaned? Take a photo!" />
                               </View>
                            </>
                         ) : (

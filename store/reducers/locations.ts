@@ -46,7 +46,7 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
             isLoading: true,
             isRefreshing: false,
             hasError: null,
-            hasPhotoError: null
+            hasPhotoError: null,
          };
       }
       case actions.ADD_LOCATION_SUCCESS: {
@@ -54,7 +54,8 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
             ...state, 
             isLoading: false,
             isRefreshing: false,
-            hasError: null
+            hasError: null,
+            image: null
          };
       }
       case actions.ADD_LOCATION_FAILURE: {
@@ -63,15 +64,6 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
             isLoading: false,
             isRefreshing: false,
             hasError: true
-         };
-      }
-      case actions.ADD_LOCATION_PHOTO_FAILURE: {
-         return {
-            ...state, 
-            isLoading: false,
-            isRefreshing: false,
-            hasError: false,
-            hasPhotoError: true
          };
       }
       case actions.UPDATE_LOCATION: {
@@ -87,7 +79,8 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
             ...state, 
             isLoading: false,
             isRefreshing: false,
-            hasError: null
+            hasError: null,
+            image: null
          };
       }
       case actions.UPDATE_LOCATION_FAILURE: {
@@ -111,7 +104,8 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
             ...state, 
             isLoading: false,
             isRefreshing: false,
-            hasError: null
+            hasError: null,
+            image: null
          };
       }
       case actions.DELETE_LOCATION_FAILURE: {
@@ -140,7 +134,8 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          })
          return {
             ...state,
-            items: mappedItems
+            items: mappedItems,
+            image: null
          }
       }
       case actions.MARK_LOCATION_AS_DONE: {
@@ -163,7 +158,8 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          return {
             ...state,
             items: mappedItems,
-            isLoading: false
+            isLoading: false,
+            image: null
          }
       }
       case actions.MARK_LOCATION_AS_DONE_FAILURE: {
@@ -192,6 +188,28 @@ const locationsReducer = (state: LocationsState = initialState, action: any) => 
          return {
             ...state,
             isLoading: false,
+            hasError: action.payload
+         }
+      }
+      case actions.DELETE_LOCATION_PHOTO: {
+         return {
+            ...state,
+            isLoading: true,
+            hasError: null
+         }
+      }
+      case actions.DELETE_LOCATION_PHOTO_SUCCESS: {
+         return {
+            ...state,
+            isLoading: false,
+            image: null
+         }
+      }
+      case actions.DELETE_LOCATION_PHOTO_FAILURE: {
+         return {
+            ...state,
+            isLoading: false,
+            image: null,
             hasError: action.payload
          }
       }

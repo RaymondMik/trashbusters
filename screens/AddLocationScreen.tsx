@@ -6,12 +6,12 @@ import * as yup from "yup";
 import MapView from 'react-native-maps';
 import * as Permissions from "expo-permissions";
 import * as LocationPicker from "expo-location";
-import { addLocation, addNotificationToken } from "../store/actions/locations";
+import { addLocation, addNotificationToken, deleteLocationPhoto } from "../store/actions/locations";
 import ImageHandler from "../components/ImageHandler";
 import CustomInput from "../components/CustomInput";
 import Colors, { FALLBACK_LOCATION } from "../constants";
 import { RootState, UserGPSLocation, LocationScreenStatus } from "../types";
-import { registerForPushNotificationsAsync } from "../utils";
+import { registerForPushNotificationsAsync, getImagePath } from "../utils";
 
 const addLocationValidationSchema = yup.object().shape({
    title: yup
@@ -37,6 +37,10 @@ const AddLocationScreen = ({ route, navigation }: any) => {
 
    const { userId, hasError: authError } = useSelector((state: RootState) => state.auth);
    const { isLoading, hasPhotoError, notificationToken, image } = useSelector((state: RootState) => state.locations);
+
+   const imagePath = image ? getImagePath(image, userId) : null;
+
+   // console.log(getImagePath("https://firebasestorage.googleapis.com/v0/b/rn-locations.appspot.com/o/kQULcNQlZFMMWzamPdBcjulolCU2%2F1616143801464-media.jpg?alt=media&token=f9f0a384-ee41-4c0f-8ae6-e1ec48877c2a"));
 
    useEffect(() => {
       (async () => {
@@ -100,7 +104,12 @@ const AddLocationScreen = ({ route, navigation }: any) => {
    React.useLayoutEffect(() => {
       navigation.setOptions({
          headerLeft: () => (
-            <Pressable onPress={() => { navigation.goBack() }} style={{ marginLeft: 15 }}>
+            <Pressable onPress={() => { 
+               navigation.goBack();
+               if (imagePath) {
+                  dispatch(deleteLocationPhoto(imagePath));
+               }
+            }} style={{ marginLeft: 15 }}>
                <Text style={ styles.headerText }>Cancel</Text>
             </Pressable>
          ),

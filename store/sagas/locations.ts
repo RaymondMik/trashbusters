@@ -9,6 +9,7 @@ import { FALLBACK_LOCATION } from "../../constants";
 import { FIREBASE_URI } from "../../secrets";
 import { fetchData } from "../../services";
 import { LocationScreenStatus } from "../../types";
+import { getImagePath } from "../../utils";
 
 const uploadImage = async(uri: string, userId: string) => {
    const response = await fetch(uri);
@@ -40,32 +41,53 @@ const uploadImage = async(uri: string, userId: string) => {
             .ref()
             .child(`${userId}/` + name).getDownloadURL()
             .then(fireBaseUrl => {
+               console.log(444, fireBaseUrl)
                resolve(fireBaseUrl)
             })
       })
    });
 }
 
-const deleteImage = async (name: string) => {
+const deleteImage = async (filePath: string) => {
    await firebaseInit
       .storage()
       .ref()
-      .child(name)
+      .child(filePath)
       .delete()
 }
 
 function* uploadImageSaga() {
    yield takeLatest(actions.ADD_LOCATION_PHOTO, function* ({ payload }: any) {
       try {
+         const { image } = yield select(state => state.locations);
          const { uri, userId } = payload;
+
+         if (image) {
+            const imagePath = getImagePath(image, userId);
+            yield put(actions.deleteLocationPhoto(imagePath));
+         }
 
          // @ts-ignore
          const addImageResponse = yield uploadImage(uri, userId);
-         console.log(333, addImageResponse);
+
+         console.log(222, addImageResponse)
   
          yield put(actions.addLocationPhotoSuccess(addImageResponse))
       } catch (e) {
-         yield put(actions.addLocationPhotoFailure("photo error"))
+         yield put(actions.addLocationPhotoFailure(e))
+      }
+   });
+}
+
+function* deleteImageSaga() {
+   yield takeLatest(actions.DELETE_LOCATION_PHOTO, function* ({ payload }: any) {
+      try {
+         // @ts-ignore
+         const deleteImageResponse = yield deleteImage(payload);
+  
+         yield put(actions.deleteLocationPhotoSuccess(deleteImageResponse))
+      } catch (e) {
+         yield put(actions.deleteLocationPhotoFailure(e))
       }
    });
 }
@@ -169,8 +191,6 @@ function* updateLocationSaga() {
    ], function* ({ type, payload }: any) {
       try {
          const { token } = yield select(state => state.auth);
-
-         console.log(666, payload);
  
          let body: string = JSON.stringify({});
 
@@ -188,7 +208,6 @@ function* updateLocationSaga() {
          }
 
          if (type === actions.MARK_LOCATION_AS_DONE) {
-            console.log(661, payload);
             // returns image URL if successfull
             // @ts-ignore
             const addImageResponse = yield uploadImage(payload.location.image, payload.location._id);
@@ -264,7 +283,7 @@ function* updateLocationSaga() {
             yield put(actions.updateLocationFailure(error));
          } else if (type === actions.ASSIGN_LOCATION) {
             yield put(actions.assignLocationFailure(error));
-         } else {
+         } else if (type === actions.MARK_LOCATION_AS_DONE) {
             yield put(actions.markLocationAsDoneFailure(error));
          }
       }
@@ -274,8 +293,28 @@ function* updateLocationSaga() {
 function* deleteLocationSaga() {
    yield takeLatest(actions.DELETE_LOCATION, function* ({payload}: any) {
       try {
-         const { token } = yield select(state => state.auth);
+         const { token, userId } = yield select(state => state.auth);
+         const { items } = yield select(state => state.locations);
          const { location, navigation } = payload;
+
+         const locationData = items.find((item: Location) => item._id === location);
+
+         console.log(999, locationData);
+
+         if (locationData.pictureAfter) {
+            const pictureBeforePath = getImagePath(locationData.pictureBefore, userId);
+            const pictureAfterPath = getImagePath(locationData.pictureAfter, userId);
+
+            yield all([
+               put(actions.deleteLocationPhoto(pictureBeforePath)),
+               put(actions.deleteLocationPhoto(pictureAfterPath))
+            ]);
+         } else {
+            const pictureBeforePath = getImagePath(locationData.pictureBefore, userId);
+
+            yield put(actions.deleteLocationPhoto(pictureBeforePath));
+         }
+
          // @ts-ignore
          const response = yield call(fetchData, {
             endpoint: `${FIREBASE_URI}/locations/${location}.json?auth=${token}`,
@@ -308,6 +347,7 @@ export default function* locationsSaga() {
       addLocationSaga(),
       updateLocationSaga(),
       deleteLocationSaga(),
-      uploadImageSaga()
+      uploadImageSaga(),
+      deleteImageSaga()
    ]);
 }

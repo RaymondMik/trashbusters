@@ -8,10 +8,6 @@ export const ADD_LOCATION: string = "ADD_LOCATION";
 export const ADD_LOCATION_SUCCESS: string = "ADD_LOCATION_SUCCESS";
 export const ADD_LOCATION_FAILURE: string = "ADD_LOCATION_FAILURE";
 
-export const ADD_LOCATION_PHOTO: string = "ADD_LOCATION_PHOTO";
-export const ADD_LOCATION_PHOTO_SUCCESS: string = "ADD_LOCATION_PHOTO_SUCCESS";
-export const ADD_LOCATION_PHOTO_FAILURE: string = "ADD_LOCATION_PHOTO_FAILURE";
-
 export const UPDATE_LOCATION: string = "UPDATE_LOCATION";
 export const UPDATE_LOCATION_SUCCESS: string = "UPDATE_LOCATION_SUCCESS"; 
 export const UPDATE_LOCATION_FAILURE: string = "UPDATE_LOCATION_FAILURE";
@@ -27,6 +23,14 @@ export const ASSIGN_LOCATION_FAILURE: string = "ASSIGN_LOCATION_FAILURE";
 export const MARK_LOCATION_AS_DONE: string = "MARK_LOCATION_AS_DONE";
 export const MARK_LOCATION_AS_DONE_SUCCESS: string = "MARK_LOCATION_AS_DONE_SUCCESS";
 export const MARK_LOCATION_AS_DONE_FAILURE: string = "MARK_LOCATION_AS_DONE_FAILURE";
+
+export const ADD_LOCATION_PHOTO: string = "ADD_LOCATION_PHOTO";
+export const ADD_LOCATION_PHOTO_SUCCESS: string = "ADD_LOCATION_PHOTO_SUCCESS";
+export const ADD_LOCATION_PHOTO_FAILURE: string = "ADD_LOCATION_PHOTO_FAILURE";
+
+export const DELETE_LOCATION_PHOTO: string = "DELETE_LOCATION_PHOTO";
+export const DELETE_LOCATION_PHOTO_SUCCESS: string = "DELETE_LOCATION_PHOTO_SUCCESS";
+export const DELETE_LOCATION_PHOTO_FAILURE: string = "DELETE_LOCATION_PHOTO_FAILURE";
 
 export const SET_USER_GPS_LOCATION: string = "SET_USER_GPS_LOCATION";
 
@@ -79,6 +83,22 @@ export const addLocationPhotoFailure = (payload: string) => ({
    type: ADD_LOCATION_PHOTO_FAILURE,
    payload
 });
+
+export const deleteLocationPhoto = (payload: string) => ({
+   type: DELETE_LOCATION_PHOTO,
+   payload
+});
+
+export const deleteLocationPhotoSuccess = (payload: string) => ({
+   type: DELETE_LOCATION_PHOTO_SUCCESS,
+   payload
+});
+
+export const deleteLocationPhotoFailure = (payload: string) => ({
+   type: DELETE_LOCATION_PHOTO_FAILURE,
+   payload
+});
+
 
 export const updateLocation = (location: any, navigation: any) => ({
    type: UPDATE_LOCATION,

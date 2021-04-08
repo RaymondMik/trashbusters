@@ -31,3 +31,9 @@ export async function registerForPushNotificationsAsync() {
  
    return token;
 }
+
+export  const getImagePath = (imageURL: string, userId: string) => {
+  const imageName = imageURL.split("%2F")[1].split("?");
+
+  return `${userId}/${imageName[0]}`;
+}; 

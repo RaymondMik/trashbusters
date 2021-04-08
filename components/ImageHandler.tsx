@@ -17,6 +17,7 @@ interface Props {
 const ImageHandler = ({ label, showPreview = true }: Props) => {
    const dispatch = useDispatch();
    const { userId } = useSelector((state: RootState) => state.auth);
+   console.log(1234, userId);
    const { isLoading, image } = useSelector((state: RootState) => state.locations);
 
    const verifyPermissions = async() => {
@@ -44,11 +45,10 @@ const ImageHandler = ({ label, showPreview = true }: Props) => {
          allowsEditing: true,
          aspect: [16, 9],
          quality: 0.5
-      });      
+      }); 
+
       dispatch(addLocationPhoto(image.uri, userId))
    }
-
-   console.log(9898, isLoading);
 
    return (
       <View style={styles.container}>
