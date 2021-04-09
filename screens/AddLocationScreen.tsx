@@ -40,8 +40,6 @@ const AddLocationScreen = ({ route, navigation }: any) => {
 
    const imagePath = image ? getImagePath(image, userId) : null;
 
-   // console.log(getImagePath("https://firebasestorage.googleapis.com/v0/b/rn-locations.appspot.com/o/kQULcNQlZFMMWzamPdBcjulolCU2%2F1616143801464-media.jpg?alt=media&token=f9f0a384-ee41-4c0f-8ae6-e1ec48877c2a"));
-
    useEffect(() => {
       (async () => {
          try {

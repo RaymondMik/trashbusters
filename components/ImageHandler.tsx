@@ -17,7 +17,6 @@ interface Props {
 const ImageHandler = ({ label, showPreview = true }: Props) => {
    const dispatch = useDispatch();
    const { userId } = useSelector((state: RootState) => state.auth);
-   console.log(1234, userId);
    const { isLoading, image } = useSelector((state: RootState) => state.locations);
 
    const verifyPermissions = async() => {

@@ -41,7 +41,6 @@ const uploadImage = async(uri: string, userId: string) => {
             .ref()
             .child(`${userId}/` + name).getDownloadURL()
             .then(fireBaseUrl => {
-               console.log(444, fireBaseUrl)
                resolve(fireBaseUrl)
             })
       })
@@ -69,8 +68,6 @@ function* uploadImageSaga() {
 
          // @ts-ignore
          const addImageResponse = yield uploadImage(uri, userId);
-
-         console.log(222, addImageResponse)
   
          yield put(actions.addLocationPhotoSuccess(addImageResponse))
       } catch (e) {
@@ -298,8 +295,6 @@ function* deleteLocationSaga() {
          const { location, navigation } = payload;
 
          const locationData = items.find((item: Location) => item._id === location);
-
-         console.log(999, locationData);
 
          if (locationData.pictureAfter) {
             const pictureBeforePath = getImagePath(locationData.pictureBefore, userId);
