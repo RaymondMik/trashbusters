@@ -35,7 +35,7 @@ const signInValidationSchema = yup.object().shape({
 })
 
 const AuthScreen = () => {
-   const [authState, setAuthState] = useState<AuthStates>(AuthStates.SignUp);
+   const [authState, setAuthState] = useState<AuthStates>(AuthStates.SignIn);
    const dispatch = useDispatch();
    const { isLoading, hasError } = useSelector((state: RootState) => state.auth);
 
