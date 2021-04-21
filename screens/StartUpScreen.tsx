@@ -28,15 +28,14 @@ const StartUpScreen = ({ navigation }: Navigation) => {
           }
 
          const expirationTime = expirationDate.getTime() - new Date().getTime();
-
          let timer: number;
-
+                  
          const setTokenExpirationTimer = () => {
             timer = window.setTimeout(() => {
                dispatch(authenticateLogout());
                AsyncStorage.removeItem(ASYNC_STORAGE_USER_DATA_KEY);
                clearTimeout(timer);
-            }, expirationDate.getTime() * 1000)
+            }, expirationTime)
          };
 
          dispatch(authenticateSuccess({
