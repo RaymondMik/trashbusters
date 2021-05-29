@@ -16,6 +16,7 @@ export default {
 export const ASYNC_STORAGE_USER_DATA_KEY: string = "userData";
 export const FIREBASE_SIGNUP_URI: string = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=";
 export const FIREBASE_SIGNIN_URI: string = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
+export const FIREBASE_REFRESH_TOKEN_URI: string = "https://securetoken.googleapis.com/v1/token?key=";
 
 export const FALLBACK_LOCATION: UserGPSLocation = {
    coords: {

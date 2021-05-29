@@ -216,12 +216,13 @@ const styles = StyleSheet.create({
       paddingHorizontal: 20
    },
    formContainer: {
+      flex: 1,
       width: "100%",
+      height: 480,
       padding: 20,
       backgroundColor: Colors.white,
       borderTopLeftRadius: 40,
       borderTopRightRadius: 40,
-      flex: 1,
    },
    textInput: {
       width: "100%",

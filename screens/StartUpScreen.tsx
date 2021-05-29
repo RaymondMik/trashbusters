@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ASYNC_STORAGE_USER_DATA_KEY } from "../constants";
 import { Navigation } from "../types";
-import { authenticateSuccess, authenticateLogout, setDidTryAutoLogin } from "../store/actions/auth";
+import { authenticateSuccess, authenticateLogout, authenticateRefreshToken, setDidTryAutoLogin } from "../store/actions/auth";
 
 const StartUpScreen = ({ navigation }: Navigation) => {
    const dispatch = useDispatch();
@@ -19,8 +19,10 @@ const StartUpScreen = ({ navigation }: Navigation) => {
          }
 
          const transformedData = JSON.parse(userData);
-         const { token, userId, expiryDate, username } = transformedData;
+         const { token, refreshToken, userId, expiryDate, username } = transformedData;
          const expirationDate = new Date(Number(expiryDate));
+
+         // console.log(991122, expirationDate, new Date(), token, userId);
 
          if (expirationDate <= new Date() || !token || !userId) {
             dispatch(setDidTryAutoLogin());
@@ -32,10 +34,12 @@ const StartUpScreen = ({ navigation }: Navigation) => {
                   
          const setTokenExpirationTimer = () => {
             timer = window.setTimeout(() => {
-               dispatch(authenticateLogout());
-               AsyncStorage.removeItem(ASYNC_STORAGE_USER_DATA_KEY);
+               dispatch(authenticateRefreshToken(refreshToken))
+               // dispatch(authenticateLogout());
+               // AsyncStorage.removeItem(ASYNC_STORAGE_USER_DATA_KEY);
                clearTimeout(timer);
-            }, expirationTime)
+            // }, expirationTime)
+            }, 5000)
          };
 
          dispatch(authenticateSuccess({

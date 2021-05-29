@@ -2,8 +2,9 @@ import * as actions from "../actions/auth";
 import { AuthState } from "../../types";
 
 const initialState: AuthState = {
-   token: null,
    userId: null,
+   token: null,
+   refreshToken: null,
    username: null,
    isLoading: false,
    hasError: null,
@@ -25,6 +26,7 @@ const auth = (state = initialState, action: any) => {
             ...state,
             userId: action.payload.userId,
             token: action.payload.token,
+            refreshToken: action.payload.refreshToken,
             username: action.payload.username,
             isLoading: false,
             hasError: null,
@@ -36,6 +38,7 @@ const auth = (state = initialState, action: any) => {
             ...state,
             userId: null,
             token: null,
+            refreshToken: null,
             username: null,
             isLoading: false,
             hasError: action.payload,
