@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ScrollView, StyleSheet, Pressable, Text, View, Image, Alert, ActivityIndicator } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleModal } from "../store/actions/modal"
@@ -13,7 +13,7 @@ import { markLocationAsDone } from "../store/actions/locations";
 import { RootState } from "../types";
 
 const LocationScreen = ({ route, navigation }: Navigation) => {
-   const dispatch = useDispatch();
+   const dispatch = useDispatch()
 
    const { data: routeData, status } = route.params;
 
@@ -267,6 +267,9 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: "bold",
       color: Colors.white,
+   },
+   mytext: {
+      paddingVertical: 20
    }
 });
  
